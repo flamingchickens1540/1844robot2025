@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class pushyThing extends SubsystemBase {
+public class PushyThing extends SubsystemBase {
     private final TalonFX pushyThingMotor = new TalonFX(Constants.pushyThing.MOTOR_ID);
-    public pushyThing(){
+    public PushyThing(){
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.Feedback.SensorToMechanismRatio = Constants.Shooter.GEAR_RATIO;
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
@@ -22,7 +22,7 @@ public class pushyThing extends SubsystemBase {
 
 
     public Command Push(double timeTune, double speedTune) {
-        return Commands.run(()->pushyThingMotor.set(speedTune)
+        return Commands.run(()->pushyThingMotor.set(speedTune/100)
         ).withTimeout(timeTune);
     }
 }

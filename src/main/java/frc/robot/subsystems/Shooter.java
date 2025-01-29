@@ -3,17 +3,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import java.util.function.Supplier;
-
-public class shooter extends SubsystemBase {
-    private final TalonFX shooterMotor = new TalonFX(Constants.Shooter.MOTOR_ID);
-    public shooter(){
+public class Shooter extends SubsystemBase {
+    private final TalonFX shooterMotor = new TalonFX(Constants.Shooter.MOTOR_ID);//kraken
+    public Shooter(){
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.Feedback.SensorToMechanismRatio = Constants.Shooter.GEAR_RATIO;
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
