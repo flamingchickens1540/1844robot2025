@@ -5,8 +5,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose3d;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -24,24 +22,19 @@ public final class Constants
     }
     public static class Shooter{
         public static final int MOTOR_ID = 0;
-        public static final double GEAR_RATIO = 1;
+        public static final double GEAR_RATIO = 0;
     }
     public static class pushyThing{
         public static final int MOTOR_ID = 0;
-        public static final int GEARING = 1;
     }
     public static class Arm{
         public static final int MOTOR_ID = 0;
-        public static final double GEAR_RATIO = 0;
+        public static final double GEAR_RATIO = 3*3*4*3;
     }
     public static class smallEndEffectorThing {
         public static final int MOTOR_ID = 0;
     }
     public static class largeEndEffectorThing {
         public static final int MOTOR_ID = 0;
-    }
-    public static class vison {
-        public static String cam1Name = "limelight-cam1";
-        public static Pose3d cam1Pose = new Pose3d();
     }
 }
