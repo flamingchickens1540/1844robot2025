@@ -14,7 +14,6 @@ import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
     private final TalonFX armMotor = new TalonFX(Constants.Arm.MOTOR_ID);
-    double offSet = 0;
     public Arm() {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.Feedback.SensorToMechanismRatio = Constants.Arm.GEAR_RATIO;
@@ -22,8 +21,9 @@ public class Arm extends SubsystemBase {
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0;
         config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
-        config.CurrentLimits.StatorCurrentLimitEnable = false;
-        config.CurrentLimits.StatorCurrentLimit = 40;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = 80;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         // in init function
 
@@ -46,8 +46,6 @@ public class Arm extends SubsystemBase {
 
         armMotor.getConfigurator().apply(config);
         armMotor.setPosition(0);
-        armMotor.setNeutralMode(NeutralModeValue.Brake);
-
     }
 
 
@@ -60,32 +58,5 @@ public class Arm extends SubsystemBase {
                 },
                 this
         );
-    }
-    public Command commandMotionMagicLoc(Rotation2d loc) {
-        return Commands.run(
-                () -> armMotor.setControl(new MotionMagicVoltage(loc.getRotations()))
-        ).until(
-                ()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() + offSet - loc.getRotations())<=0.001)
-        );
-    }
-
-    public Command commandBunnyDrop(){
-        return Commands.run(
-                ()->{
-                    commandMotionMagicLoc(Rotation2d.fromDegrees(55));
-                }
-        );
-    }
-    public Command commandStrartPos(){
-        return Commands.run(
-                ()->{
-                    commandMotionMagicLoc(Rotation2d.fromDegrees(0));
-                }
-        );
-    }
-    public Command commandSetToZero(){
-        //offSet = armMotor.getPosition().refresh().getValueAsDouble();
-        return Commands.run(
-                ()->armMotor.setPosition(0));
     }
 }

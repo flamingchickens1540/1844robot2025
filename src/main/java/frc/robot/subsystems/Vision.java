@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 
-public class vison extends SubsystemBase {
-    public vison() {
-        setPoseOffset(Constants.vison.cam1Pose, Constants.vison.cam1Name);
+public class Vision extends SubsystemBase {
+    public Vision() {
+        setPoseOffset(Constants.Vision.cam1Pose, Constants.Vision.cam1Name);
             }
 
     public void setPoseOffset(Pose3d poseOffsetMeters, String camName) {

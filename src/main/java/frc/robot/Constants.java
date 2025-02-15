@@ -32,7 +32,7 @@ public final class Constants
     }
     public static class Arm{
         public static final int MOTOR_ID = 0;
-        public static final double GEAR_RATIO = 0;
+        public static final double GEAR_RATIO = 3 * 3 * 4 * 3;
     }
     public static class smallEndEffectorThing {
         public static final int MOTOR_ID = 0;
@@ -40,7 +40,7 @@ public final class Constants
     public static class largeEndEffectorThing {
         public static final int MOTOR_ID = 0;
     }
-    public static class vison {
+    public static class Vision {
         public static String cam1Name = "limelight-cam1";
         public static Pose3d cam1Pose = new Pose3d();
     }
