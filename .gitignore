@@ -162,26 +162,21 @@ bin/
 *.iml
 *.ipr
 *.iws
-.idea/
+.idea
+
 out/
 
 # Fleet
 .fleet
 
 # Simulation GUI and other tools window save file
-networktables.json
-simgui.json
-*-window.json
+simgui*.json
 
-# Simulation data log directory
-logs/
+# Version file
+**/BuildConstants.java
 
-# Folder that has CTRE Phoenix Sim device config storage
 ctre_sim/
-
-# clangd
-/.cache
-compile_commands.json
-
-# Eclipse generated file for annotation processors
-.factorypath
+*.wpilog
+networktables.json
+/logs/
+.
