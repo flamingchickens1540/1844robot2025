@@ -21,7 +21,8 @@ public final class Constants
 
     }
     public static class Shooter{
-        public static final int MOTOR_ID = 0;
+        public static final int MOTOR1_ID = 0;
+        public static final int MOTOR2_ID = 0;
         public static final double GEAR_RATIO = 0;
     }
     public static class pushyThing{
