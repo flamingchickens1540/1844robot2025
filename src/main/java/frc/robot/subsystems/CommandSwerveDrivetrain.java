@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static com.ctre.phoenix6.Utils.getCurrentTimeSeconds;
+import static com.ctre.phoenix6.Utils.getSystemTimeSeconds;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
@@ -10,7 +12,9 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -19,10 +23,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
+import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
+import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -187,7 +196,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
-     * @param request Function returning the request to apply
+     * @param requestSupplier Supplier Function returning the request to apply
      * @return Command to run
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -235,14 +244,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        addVisionMeasurement(LimelightHelpers.getBotPose2d(Constants.vison.firstLimelight),getCurrentTimeSeconds()-LimelightHelpers.getLatency_Pipeline(Constants.vison.firstLimelight)/1000, VecBuilder.fill(0.5,0.5,0.5));
     }
 
     private void startSimThread() {
-        m_lastSimTime = Utils.getCurrentTimeSeconds();
+        m_lastSimTime = getCurrentTimeSeconds();
 
         /* Run simulation at a faster rate so PID gains behave more reasonably */
         m_simNotifier = new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
+            final double currentTime = getCurrentTimeSeconds();
             double deltaTime = currentTime - m_lastSimTime;
             m_lastSimTime = currentTime;
 
@@ -284,5 +294,65 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Matrix<N3, N1> visionMeasurementStdDevs
     ) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+    }
+
+    public Command commandDrive(XboxController controller){
+        return applyRequest( () -> {
+            SwerveRequest.FieldCentric request  = new SwerveRequest.FieldCentric();
+            request.VelocityY = MathUtil.applyDeadband(-controller.getLeftX(), 0.1) *TunerConstants.kSpeedAt12VoltsMps;
+            request.VelocityX = MathUtil.applyDeadband(-controller.getLeftY(), 0.1)*TunerConstants.kSpeedAt12VoltsMps;
+            double driveBaseRadius = Math.hypot(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY);
+            request.RotationalRate = TunerConstants.kSpeedAt12VoltsMps/driveBaseRadius*-controller.getRightX();
+            //System.out.println(request.VelocityY+" y  "+request.VelocityX+" x  "+request.RotationalRate+" rot");
+            return request;
+
+        });
+    }
+    public Command commandTurnAndDrive (double drivePercent, Supplier<Rotation2d> turn){
+        return applyRequest( () -> {
+            SwerveRequest.RobotCentric request  = new SwerveRequest.RobotCentric();
+            request.VelocityY = 0;
+            request.VelocityX = drivePercent * TunerConstants.kSpeedAt12VoltsMps;
+            double driveBaseRadius = Math.hypot(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY);
+            request.RotationalRate = turn.get().getRotations();
+            return request;
+
+        });
+    }
+    private Pose2d getClosestPose() {
+        Pose2d currentPose = getState().Pose;
+        Pose2d closestPose = null;
+        double minDistance = Double.MAX_VALUE;
+
+        Pose2d[] poseList = new Pose2d[1];
+        for (Pose2d pose : poseList) {
+            double distance = currentPose.getTranslation().getDistance(pose.getTranslation());
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPose = pose;
+            }
+
+        }
+    return closestPose;
+    }
+    public Command goToClosestShootingPose(int kp) {
+        return applyRequest(()->{
+            Pose2d ClosestPose = getClosestPose();
+            SwerveRequest.RobotCentric request  = new SwerveRequest.RobotCentric();
+            request.VelocityX = ClosestPose.getX()-getState().Pose.getX()/100*kp;
+            request.VelocityY = ClosestPose.getY()-getState().Pose.getY()/100*kp;
+            request.RotationalRate = ClosestPose.getRotation().getRadians()/100*kp;
+        return request;
+        });
+    }
+    public Command goToPosition(int kp, Pose2d point){
+        return applyRequest(()->{
+           SwerveRequest.RobotCentric request  = new SwerveRequest.RobotCentric();
+           request.VelocityX = point.getX()-getState().Pose.getX()/100*kp;
+           request.VelocityY = point.getX()-getState().Pose.getY()/100*kp;
+           request.RotationalRate = point.getX()-getState().Pose.getRotation().getRadians();
+           return request;
+        });
+
     }
 }

@@ -5,10 +5,21 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.smallEndEffectorThing;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.endEffectorThing;
+import frc.robot.subsystems.pushyThing;
+import frc.robot.subsystems.shooter;
 
 
 /**
@@ -16,22 +27,58 @@ import frc.robot.subsystems.smallEndEffectorThing;
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
+class AutoChoices {
+
+    private static SendableChooser<String> example;
+    private static SendableChooser<String> start;
+    private static SendableChooser<String> next1;
+    private static SendableChooser<String> end;
+
+    public AutoChoices() {
+        // Initialize the SendableChooser
+        example = new SendableChooser<>();
+        start = new SendableChooser<>();
+        next1 = new SendableChooser<>();
+        // Set default option and add additional options
+        example.setDefaultOption("nothing", "Default");
+        example.addOption("example", "exampleAuto");
+        start.setDefaultOption("Nothing","nothing");
+        start.addOption("Buddy Auto","buddy_auto");
+        next1.setDefaultOption("Nothing","nothing");
+        next1.setDefaultOption("Score Reef","score_reef");
+
+
+        // Add the chooser to the SmartDashboard
+        SmartDashboard.putData("Auto Choices", example);
+    }
+
+    // Method to get the selected option
+
+    public static String example()  {
+        return example.getSelected();
+    }
+
+}
 public class Robot extends TimedRobot
 {
     private Command autonomousCommand;
     private final RobotContainer robotContainer;
-    public final smallEndEffectorThing smallEndEffectorThingyes = new smallEndEffectorThing();
-    
+
+
+
     /**
      * This method is run when the robot is first started up and should be used for any
      * initialization code.
      */
     public Robot()
     {
-
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
+
         robotContainer = new RobotContainer();
+        System.out.println("Instantiating robot");
+        Pose2d robotPosFromCam = new Pose2d();
+
     }
     
     
@@ -45,12 +92,14 @@ public class Robot extends TimedRobot
     @Override
     public void robotPeriodic()
     {
-        // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-        // commands, running already-scheduled commands, removing finished or interrupted commands,
-        // and running subsystem periodic() methods.  This must be called from the robot's periodic
-        // block in order for anything in the Command-based framework to work.
+        //TunerConstants.DriveTrain.setDefaultCommand(TunerConstants.DriveTrain.commandDrive(controller.getHID()));
+        Commands.print("Doing anything at all");
+//        if (controller.a().getAsBoolean()){
+//            System.out.println("btton works!(yay)");
+//        }
         CommandScheduler.getInstance().run();
-    }
+        //System.out.println(LimelightHelpers.getBotPose2d(Constants.vison.firstLimelight));
+ }
     
     
     /** This method is called once each time the robot enters Disabled mode. */
@@ -92,12 +141,21 @@ public class Robot extends TimedRobot
         {
             autonomousCommand.cancel();
         }
+//        robotContainer.controller.x().whileTrue(robotContainer.arm.commandMotionMagicLoc(20)));
+//        robotContainer.controller.b().whileTrue(robotContainer.arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("b",0))));
+//        robotContainer.controller.y().whileTrue(robotContainer.arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("y",0))));
+
+
     }
-    
     
     /** This method is called periodically during operator control. */
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+        //Commands.runOnce(()->{
+//            System.out.println("Name: " + TunerConstants.DriveTrain.getName());
+       // });
+        //System.out.println("I work");
+    }
     
     
     @Override
