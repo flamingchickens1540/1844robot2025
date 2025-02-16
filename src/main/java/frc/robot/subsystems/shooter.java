@@ -36,9 +36,7 @@ public class shooter extends SubsystemBase {
         return Commands.startEnd(
                 ()->setMotorVelocity(SmartDashboard.getNumber("shooterVelocity", 3000)),
                 ()->shooterMotor.set(0),
-                this
-        );
-
+                this);
     }
 
 

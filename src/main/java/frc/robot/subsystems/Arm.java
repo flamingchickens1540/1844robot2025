@@ -86,8 +86,7 @@ public class Arm extends SubsystemBase {
 
                 ()-> armMotor.setControl(new MotionMagicVoltage(loc.getRotations()))
         ).andThen(Commands.waitUntil(
-                ()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() + offSet - loc.getRotations())<=0.001)
-        ));
+                ()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() + offSet - loc.getRotations())<=0.001)));
     }
 
 

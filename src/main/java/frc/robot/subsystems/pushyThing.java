@@ -22,7 +22,9 @@ public class pushyThing extends SubsystemBase {
 
 
     public Command Push(double speedTune) {
-        return Commands.startEnd(()->pushyThingMotor.set(speedTune),()->pushyThingMotor.set(0), this
+        return Commands.startEnd(
+                ()->pushyThingMotor.set(speedTune),
+                ()->pushyThingMotor.set(0), this
         );
     }
 }

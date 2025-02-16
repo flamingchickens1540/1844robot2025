@@ -45,8 +45,8 @@ public class RobotContainer
         configureBindings();
         drivetrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight);;
-            controller.a().whileTrue(endEffectorThing.runFrontMotor(1));
-            controller.b().whileTrue(endEffectorThing.runBackMotor(-1));
+            controller.a().whileTrue(endEffectorThing.runFrontMotor());
+            controller.b().whileTrue(endEffectorThing.runBackMotor());
 //        drivetrain.setDefaultCommand(drivetrain.commandDrive(controller.getHID()));
 
         // Configure the trigger bindings
