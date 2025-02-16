@@ -58,7 +58,7 @@ public class Shooter extends SubsystemBase {
     {
         return Commands.startEnd(
             ()->shooterMotor2.set(speed2), 
-            ()->shooterMotor2.set(speed2));
+            ()->shooterMotor2.set(0.0));
 
     }
 

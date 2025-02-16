@@ -62,6 +62,7 @@ public class RobotContainer
         // cancelling on release.
         driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand());
         //is this good? simpler way to input two commands for one while true statement?
+        //should these be onTrue??
         driverController.x().whileTrue(Shooter.shoot1Command(0.5));
         driverController.x().whileTrue(Shooter.shoot1Command(0.7));
     }
