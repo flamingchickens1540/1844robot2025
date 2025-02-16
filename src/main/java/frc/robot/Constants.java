@@ -28,8 +28,8 @@ public final class Constants
         public static final int MOTOR_ID = 8;
     }
     public static class Arm{
-        public static final int MOTOR_ID = 21;
-        public static final double GEAR_RATIO = (double) 1/4/3/3*18/54;
+        public static final int MOTOR_ID =21;
+        public static final double GEAR_RATIO = 3*3*4*3*54/18;
         public static final int MOTOR_ID2 = 51;
     }
     public static class smallEndEffectorThing {

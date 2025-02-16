@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,14 +25,17 @@ public class Arm extends SubsystemBase {
     private final TalonFXConfiguration config = new TalonFXConfiguration();
 
     double offSet = 0;
+
+    public final StatusSignal<ForwardLimitValue> limit;
+
     public Arm() {
         config.Feedback.SensorToMechanismRatio = Constants.Arm.GEAR_RATIO;
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 23.3;
         config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -24.6;
-        config.CurrentLimits.StatorCurrentLimitEnable = false;
-        config.CurrentLimits.StatorCurrentLimit = 40;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = 80;
         // in init function
 
         SmartDashboard.putNumber("p",4.8);
