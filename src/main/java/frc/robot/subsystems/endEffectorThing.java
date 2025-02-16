@@ -10,6 +10,15 @@ import frc.robot.Constants;
 public class endEffectorThing extends SubsystemBase{
     private final SparkMax largeEndEffectorThingMotor = new SparkMax(Constants.largeEndEffectorThing.MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     public final SparkMax smallEndEffectorThingMotor = new SparkMax(Constants.smallEndEffectorThing.MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+   
+    public Command runFrontMotor(){
+
+        return Commands.startEnd(()->largeEndEffectorThingMotor.set(),()->largeEndEffectorThingMotor.set(0), this);
+    }   
+
+    public Command runBackMotor(double speed){
+        return Commands.startEnd(()->smallEndEffectorThingMotor.set(speed),()->smallEndEffectorThingMotor.set(0), this);
+    }
 
     public Command removeAlgae(double speed, double time){
         return Commands.parallel(

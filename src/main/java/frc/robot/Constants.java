@@ -33,10 +33,10 @@ public final class Constants
         public static final int MOTOR_ID2 = 51;
     }
     public static class smallEndEffectorThing {
-        public static final int MOTOR_ID = 10;
+        public static final int MOTOR_ID = 4;
     }
     public static class largeEndEffectorThing {
-        public static final int MOTOR_ID = 61;
+        public static final int MOTOR_ID = 8;
     }
     public static class vison {
         public static final String firstLimelight = "limelight-first";

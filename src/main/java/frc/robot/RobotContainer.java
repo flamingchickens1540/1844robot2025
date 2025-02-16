@@ -10,8 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,6 +45,8 @@ public class RobotContainer
         configureBindings();
         drivetrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight);;
+            controller.a().whileTrue(endEffectorThing.runFrontMotor(1));
+            controller.b().whileTrue(endEffectorThing.runBackMotor(-1));
 //        drivetrain.setDefaultCommand(drivetrain.commandDrive(controller.getHID()));
 
         // Configure the trigger bindings
@@ -74,10 +74,10 @@ public class RobotContainer
         //pose go to
 
 
-        arm.setDefaultCommand(arm.commandMoveSpeed(controller));
-        controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(2000)));
-        controller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("y",0))));
-        controller.b().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("b",0))));
+        //arm.setDefaultCommand(arm.commandMoveSpeed(controller));
+        //controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(2000)));
+       controller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("y",0))));
+       controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("b",0))));
         //pose go to
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
         System.out.println("button bindings are being worked");
@@ -97,10 +97,9 @@ public class RobotContainer
 
 
 
-        controller.a().whileTrue(shooter.spinFullUntil(50)
-                .andThen(pushyThing.Push(1, 0.5)
-                        .alongWith(shooter.spinFullUntil(1))));
-        controller.rightTrigger().whileTrue(shooter.spinFullUntil(100));
+        controller.leftTrigger().whileTrue(pushyThing.Push(-0.5));
+    
+        controller.rightTrigger().whileTrue(shooter.spinFull());
         //controller.a().whileTrue(Commands.print("I work"));
         controller.leftBumper().whileTrue(DriveTrain.commandTurnAndDrive(1, Rotation2d::new));
 

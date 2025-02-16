@@ -21,8 +21,9 @@ public class pushyThing extends SubsystemBase {
     }
 
 
-    public Command Push(double timeTune, double speedTune) {
-        return Commands.run(()->pushyThingMotor.set(speedTune)
-        ).withTimeout(timeTune);
+    public Command Push(double speedTune) {
+        return Commands.startEnd(()->pushyThingMotor.set(speedTune),()->pushyThingMotor.set(0), this
+        );
     }
 }
+ 

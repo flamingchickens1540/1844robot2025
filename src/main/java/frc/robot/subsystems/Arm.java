@@ -63,7 +63,7 @@ public class Arm extends SubsystemBase {
         armMotor.setPosition(0);
         armMotor1.setPosition(0);
         armMotor.setNeutralMode(NeutralModeValue.Brake);
-
+        limit = armMotor.getForwardLimit();
     }
 
 
