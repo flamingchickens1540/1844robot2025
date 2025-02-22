@@ -45,9 +45,16 @@ public class RobotContainer
         configureBindings();
         drivetrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight);;
+            //this isnt doing anything??
+            //what exactly is end effector?
             controller.a().whileTrue(endEffectorThing.runFrontMotor());
             controller.b().whileTrue(endEffectorThing.runBackMotor());
-        drivetrain.setDefaultCommand(drivetrain.commandDrive(controller.getHID()));
+
+            //trying something below - did not work
+            //what is use of intakeCoral function??
+            controller.a().whileTrue(endEffectorThing.intakeCoral(false, 0.5, 5));
+            //this is to enable drivetrain:
+            //drivetrain.setDefaultCommand(drivetrain.commandDrive(controller.getHID()));
 
         // Configure the trigger bindings
         SmartDashboard.putNumber("x",0);
@@ -74,7 +81,7 @@ public class RobotContainer
         //pose go to
 
 
-        //arm.setDefaultCommand(arm.commandMoveSpeed(controller));
+        arm.setDefaultCommand(arm.commandMoveSpeed(controller));
         //controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(2000)));
        controller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("y",0))));
        controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("b",0))));

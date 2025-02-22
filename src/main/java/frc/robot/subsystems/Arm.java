@@ -36,6 +36,8 @@ public class Arm extends SubsystemBase {
         config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -24.6;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.CurrentLimits.StatorCurrentLimit = 80;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        //need to invert
         // in init function
 
         SmartDashboard.putNumber("p",4.8);
@@ -70,7 +72,7 @@ public class Arm extends SubsystemBase {
     public Command commandMoveSpeed(CommandXboxController controller) {
         return Commands.run(
                 () -> {
-                    double value = (controller.getLeftY()/3);
+                    double value = -(controller.getLeftY()/3);
                     armMotor.setVoltage(value*12);
                     //System.out.println(value);
                 },
