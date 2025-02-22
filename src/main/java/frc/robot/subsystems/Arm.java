@@ -47,7 +47,7 @@ public class Arm extends SubsystemBase {
         slot0Configs.kV = 0; // A velocity target of 1 rps results in 0.12 V output
         slot0Configs.kA = 0; // An acceleration of 1 rps/s requires 0.01 V output
         //slot0Configs.kP = SmartDashboard.getNumber("p",0); // A position error of 2.5 rotations results in 12 V output
-        slot0Configs.kP = 2;
+        slot0Configs.kP = 0.5;
         slot0Configs.kI = 0; // no output for integrated error
         slot0Configs.kD = 0; // A velocity error of 1 rps results in 0.1 V output
 
@@ -79,16 +79,16 @@ public class Arm extends SubsystemBase {
                 this
         );
     }
-    public Command
-    commandMotionMagicLoc(Rotation2d loc) {
-        config.Slot0.kP = 0.5;
-        armMotor.getConfigurator().apply(config);
-        armMotor1.getConfigurator().apply(config);
+    public Command commandMotionMagicLoc(Rotation2d location) {
+
+        /*
+         * rewrite the following motion magic code. THIS IS ZAINAB'S JOB NO TOUCHY.
+         */
+        
         return Commands.runOnce(
 
-                ()-> armMotor.setControl(new MotionMagicVoltage(loc.getRotations()))
-        ).andThen(Commands.waitUntil(
-                ()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() + offSet - loc.getRotations())<=0.001)));
+                ()-> armMotor.setControl(new MotionMagicVoltage(location.getRotations())))
+        .andThen(Commands.waitUntil(()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() + offSet - location.getRotations())<=0.001)));
     }
 
 
