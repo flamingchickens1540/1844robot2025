@@ -47,7 +47,7 @@ public class RobotContainer
             FrontRight, BackLeft, BackRight);;
             controller.a().whileTrue(endEffectorThing.runFrontMotor());
             controller.b().whileTrue(endEffectorThing.runBackMotor());
-//        drivetrain.setDefaultCommand(drivetrain.commandDrive(controller.getHID()));
+        drivetrain.setDefaultCommand(drivetrain.commandDrive(controller.getHID()));
 
         // Configure the trigger bindings
         SmartDashboard.putNumber("x",0);
