@@ -5,9 +5,11 @@
 
 package frc.robot;
 
+import choreo.Choreo;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +22,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.endEffectorThing;
 import frc.robot.subsystems.pushyThing;
 import frc.robot.subsystems.shooter;
+
+import java.nio.file.Path;
 
 
 /**
@@ -115,6 +119,7 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousInit()
     {
+
         autonomousCommand = robotContainer.getAutonomousCommand();
         
         // schedule the autonomous command (example)

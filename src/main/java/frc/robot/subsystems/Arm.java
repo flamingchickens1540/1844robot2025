@@ -64,7 +64,7 @@ public class Arm extends SubsystemBase {
     public Command commandMoveSpeed(CommandXboxController controller) {
         return Commands.run(
                 () -> {
-                    double value = (controller.getLeftY()/3);
+                    double value = (controller.getLeftY()/6);
                     armMotor.setVoltage(value*12);
                     //System.out.println(value);
                 },
@@ -93,8 +93,8 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println("ArmPos: "+armMotor.getPosition().refresh().getValueAsDouble());
-        System.out.println("otherArmPos: "+armMotor1.getPosition().refresh().getValueAsDouble());
-        System.out.println("p: "+armMotor);
+//        System.out.println("ArmPos: "+armMotor.getPosition().refresh().getValueAsDouble());
+//        System.out.println("otherArmPos: "+armMotor1.getPosition().refresh().getValueAsDouble());
+//        System.out.println("p: "+armMotor);
     }
 }

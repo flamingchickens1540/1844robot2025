@@ -37,6 +37,12 @@ public class shooter extends SubsystemBase {
         ).withTimeout(time);
 
     }
+    public Command intake(double time){
+        return Commands.startEnd(
+                ()->setMotorVelocity(-1_000),
+                ()->shooterMotor.set(0)
+        ).withTimeout(time);
+    }
 
 
     private void setMotorVelocity(double velocityRPM){

@@ -1,13 +1,13 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.Utils.getCurrentTimeSeconds;
-import static com.ctre.phoenix6.Utils.getSystemTimeSeconds;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -38,10 +38,12 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
-public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+
+    private Rotation2d rotationOffset = Rotation2d.kZero;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -135,7 +137,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
     }
+
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -319,6 +323,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         });
     }
+
+
+
     private Pose2d getClosestPose() {
         Pose2d currentPose = getState().Pose;
         Pose2d closestPose = null;
@@ -345,14 +352,39 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return request;
         });
     }
-    public Command goToPosition(int kp, Pose2d point){
-        return applyRequest(()->{
-           SwerveRequest.RobotCentric request  = new SwerveRequest.RobotCentric();
-           request.VelocityX = point.getX()-getState().Pose.getX()/100*kp;
-           request.VelocityY = point.getX()-getState().Pose.getY()/100*kp;
-           request.RotationalRate = point.getX()-getState().Pose.getRotation().getRadians();
-           return request;
-        });
+    public Command goToPosition(int kp, Pose2d point) {
+        return applyRequest(() -> {
+            SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric();
+            request.VelocityX = point.getX() - getState().Pose.getX() / 100 * kp;
+            request.VelocityY = point.getX() - getState().Pose.getY() / 100 * kp;
+            request.RotationalRate = point.getX() - getState().Pose.getRotation().getRadians();
 
+            return request;
+        });
+    }
+        public Command Zero() {
+        return Commands.run(
+                ()->{
+                    this.resetRotation(Rotation2d.fromDegrees(0));
+                }
+        );
+
+
+    }
+    public Command moveABitForward(double amount) {
+        return applyRequest(()-> {
+            SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric();
+            request.VelocityY = amount;
+            return request;
+        });
+    }
+    public Command setVelocityAndRotationalRate(double VelocityX, double VelocityY, double RotationalRate){
+        return applyRequest(()->{
+            SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric();
+            request.VelocityX = VelocityX;
+            request.VelocityY = VelocityY;
+            request.RotationalRate = RotationalRate;
+            return request;
+        });
     }
 }

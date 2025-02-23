@@ -23,7 +23,7 @@ deploy {
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
-            team = project.frc.getTeamNumber()
+            team = project.frc.getTeamOrDefault(1844)
             debug = project.frc.getDebugOrDefault(false)
 
             artifacts {
@@ -55,6 +55,7 @@ wpi.java.debugJni = false
 def includeDesktopSupport = false
 
 dependencies {
+
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()

@@ -25,7 +25,7 @@ public final class Constants
         public static final double GEAR_RATIO = 0;
     }
     public static class pushyThing{
-        public static final int MOTOR_ID = 8;
+        public static final int MOTOR_ID = 9;
     }
     public static class Arm{
         public static final int MOTOR_ID = 21;
@@ -33,10 +33,10 @@ public final class Constants
         public static final int MOTOR_ID2 = 51;
     }
     public static class smallEndEffectorThing {
-        public static final int MOTOR_ID = 10;
+        public static final int MOTOR_ID1 = 8;
     }
     public static class largeEndEffectorThing {
-        public static final int MOTOR_ID = 61;
+        public static final int MOTOR_ID = 4;
     }
     public static class vison {
         public static final String firstLimelight = "limelight-first";

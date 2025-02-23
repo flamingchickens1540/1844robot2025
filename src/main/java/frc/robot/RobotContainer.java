@@ -5,20 +5,29 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
+import choreo.Choreo;
+import choreo.trajectory.Trajectory;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
+
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import java.nio.file.Path;
+import java.util.function.Supplier;
+
+
 import static frc.robot.generated.TunerConstants.*;
+
 
 
 /**
@@ -39,6 +48,7 @@ public class RobotContainer
     public final frc.robot.subsystems.shooter shooter = new shooter();
     public final frc.robot.subsystems.Arm arm = new Arm();
     public final CommandSwerveDrivetrain drivetrain;
+    public final CommandXboxController scontroller = new CommandXboxController(1);
     
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -72,12 +82,11 @@ public class RobotContainer
      */
     private void configureBindings() {
         //pose go to
-
-
-        arm.setDefaultCommand(arm.commandMoveSpeed(controller));
-        controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(2000)));
-        controller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("y",0))));
-        controller.b().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("b",0))));
+        controller.rightBumper().whileTrue(DriveTrain.Zero());
+        arm.setDefaultCommand(arm.commandMoveSpeed(scontroller));
+        //controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(2000)));
+        //controller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("y",0))));
+        //controller.b().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("b",0))));
         //pose go to
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
         System.out.println("button bindings are being worked");
@@ -97,15 +106,19 @@ public class RobotContainer
 
 
 
-        controller.a().whileTrue(shooter.spinFullUntil(50)
-                .andThen(pushyThing.Push(1, 0.5)
-                        .alongWith(shooter.spinFullUntil(1))));
-        controller.rightTrigger().whileTrue(shooter.spinFullUntil(100));
+        scontroller.leftTrigger().whileTrue(shooter.spinFullUntil(3)
+                .andThen(pushyThing.Push(1, -0.5)
+                        .alongWith(shooter.spinFullUntil(1)).withTimeout(1)));
+        scontroller.leftBumper().whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3,0.2)));
+        //controller.rightTrigger().whileTrue(shooter.spinFullUntil(100));
         //controller.a().whileTrue(Commands.print("I work"));
-        controller.leftBumper().whileTrue(DriveTrain.commandTurnAndDrive(1, Rotation2d::new));
+        //controller.leftBumper().whileTrue(DriveTrain.commandTurnAndDrive(1, Rotation2d::new));
 
-
-        //TunerConstants.DriveTrain.setDefaultCommand(TunerConstants.DriveTrain.commandDrive(controller.getHID()));
+        scontroller.rightBumper().whileTrue(endEffectorThing.intakeCoral(true,0.9,3));
+        scontroller.rightBumper().whileFalse(endEffectorThing.Stop());
+        scontroller.rightTrigger().whileTrue(endEffectorThing.outputCoral(false,0.9,3));
+        scontroller.rightTrigger().whileFalse(endEffectorThing.Stop());
+        TunerConstants.DriveTrain.setDefaultCommand(TunerConstants.DriveTrain.commandDrive(controller.getHID()));
 
     }
 
@@ -116,9 +129,24 @@ public class RobotContainer
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand()
-    {
-        // An example command will be run in autonomous
-        return null;
+    public Command getAutonomousCommand() {
+//        try {
+//            // Load the trajectory file
+//            Trajectory trajectory = Choreo.loadTrajectory(Filesystem.getDeployDirectory().toPath().resolve(trajname).toString()).get();
+//
+//            // Loop through trajectory points and send speeds to the swerve drive
+//            for (int i = 0; i <= trajectory.getTotalTime(); i++) {
+//                double[] doubleMatrix =TrajectoryUtils.getVelocitiesAtTime(trajectory,i);
+//                return DriveTrain.setVelocityAndRotationalRate(doubleMatrix[0],doubleMatrix[1],doubleMatrix[2]);
+//            }
+//
+//
+//                 // Command the robot to follow the trajectory
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+
+        return drivetrain.moveABitForward(1);
     }
 }
