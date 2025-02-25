@@ -49,6 +49,7 @@ public class Arm extends SubsystemBase {
         motionMagicConfigs.MotionMagicAcceleration = 50; // Target acceleration of 160 rps/s (0.5 seconds)
         motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         armMotor.getConfigurator().apply(config);
         armMotor1.getConfigurator().apply(config);
@@ -56,15 +57,13 @@ public class Arm extends SubsystemBase {
 
         armMotor.setPosition(0);
         armMotor1.setPosition(0);
-        armMotor.setNeutralMode(NeutralModeValue.Brake);
-
     }
 
 
     public Command commandMoveSpeed(CommandXboxController controller) {
         return Commands.run(
                 () -> {
-                    double value = (controller.getLeftY()/6);
+                    double value = (controller.getLeftY()/3.8);
                     armMotor.setVoltage(value*12);
                     //System.out.println(value);
                 },

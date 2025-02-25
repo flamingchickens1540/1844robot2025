@@ -10,9 +10,12 @@ import choreo.trajectory.Trajectory;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -49,7 +52,7 @@ public class RobotContainer
     public final frc.robot.subsystems.Arm arm = new Arm();
     public final CommandSwerveDrivetrain drivetrain;
     public final CommandXboxController scontroller = new CommandXboxController(1);
-    
+    public final XboxController xboxController = new XboxController(0);
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer()
@@ -105,21 +108,26 @@ public class RobotContainer
 //        controller.b().whileTrue(command);
 
 
-
+        scontroller.a().whileTrue(endEffectorThing.removeAlgae(1,1));
+        scontroller.a().whileFalse(endEffectorThing.Stop());
         scontroller.leftTrigger().whileTrue(shooter.spinFullUntil(3)
                 .andThen(pushyThing.Push(1, -0.5)
                         .alongWith(shooter.spinFullUntil(1)).withTimeout(1)));
-        scontroller.leftBumper().whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3,0.2)));
+        scontroller.leftTrigger().whileFalse(pushyThing.Stop());
+        scontroller.leftBumper().whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3,0.1)));
+        scontroller.leftBumper().whileFalse(pushyThing.Stop().andThen(shooter.Stop()));
         //controller.rightTrigger().whileTrue(shooter.spinFullUntil(100));
         //controller.a().whileTrue(Commands.print("I work"));
         //controller.leftBumper().whileTrue(DriveTrain.commandTurnAndDrive(1, Rotation2d::new));
 
-        scontroller.rightBumper().whileTrue(endEffectorThing.intakeCoral(true,0.9,3));
+        scontroller.rightBumper().whileTrue(endEffectorThing.intakeCoral(true,1,3));
         scontroller.rightBumper().whileFalse(endEffectorThing.Stop());
-        scontroller.rightTrigger().whileTrue(endEffectorThing.outputCoral(false,0.9,3));
+        scontroller.rightTrigger().whileTrue(endEffectorThing.outputCoral(false,1,3));
         scontroller.rightTrigger().whileFalse(endEffectorThing.Stop());
         TunerConstants.DriveTrain.setDefaultCommand(TunerConstants.DriveTrain.commandDrive(controller.getHID()));
-
+        //controller.a().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(20)));
+        scontroller.x().whileTrue(pushyThing.Push(1,-0.999));
+        scontroller.x().whileFalse(pushyThing.Stop());
     }
 
 
@@ -129,24 +137,37 @@ public class RobotContainer
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
+    public Command getAutonomousCommand(String trajname, double timestamp) {
 //        try {
 //            // Load the trajectory file
-//            Trajectory trajectory = Choreo.loadTrajectory(Filesystem.getDeployDirectory().toPath().resolve(trajname).toString()).get();
+            Trajectory trajectory = Choreo.loadTrajectory("main/deploy/Choreo/"+trajname).get();
 //
+//        DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+//        var mirrorForRedAlliance = false;
+//        switch (alliance){
+//            case Red:
+//                mirrorForRedAlliance = true;
+//                break;
+//            case Blue:
+//                mirrorForRedAlliance = false;
+//        }
+//        DriveTrain.setOdometry((Pose2d) trajectory.getInitialPose(mirrorForRedAlliance).get());
 //            // Loop through trajectory points and send speeds to the swerve drive
-//            for (int i = 0; i <= trajectory.getTotalTime(); i++) {
-//                double[] doubleMatrix =TrajectoryUtils.getVelocitiesAtTime(trajectory,i);
-//                return DriveTrain.setVelocityAndRotationalRate(doubleMatrix[0],doubleMatrix[1],doubleMatrix[2]);
-//            }
+//
+//                double[] doubleMatrix =TrajectoryUtils.getVelocitiesAtTime(trajectory,timestamp);
+//                return DriveTrain.setVelocityAndRotationalRate(doubleMatrix[0],doubleMatrix[1],doubleMatrix[2]);// Command the robot to follow the trajectory
 //
 //
-//                 // Command the robot to follow the trajectory
+//
+//
 //
 //        } catch (Exception e) {
-//            throw new RuntimeException(e);
+//            System.out.println(e);
+//            return Commands.runOnce(()->{
+//
+//            });
 //        }
+        return DriveTrain.moveABitForward(1);
 
-        return drivetrain.moveABitForward(1);
     }
 }

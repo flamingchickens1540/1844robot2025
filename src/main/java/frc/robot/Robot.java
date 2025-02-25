@@ -120,8 +120,8 @@ public class Robot extends TimedRobot
     public void autonomousInit()
     {
 
-        autonomousCommand = robotContainer.getAutonomousCommand();
-        
+        autonomousCommand = robotContainer.getAutonomousCommand("Leo Auto 1.traj",time);
+
         // schedule the autonomous command (example)
         if (autonomousCommand != null)
         {
@@ -129,10 +129,14 @@ public class Robot extends TimedRobot
         }
     }
     
-    
+    int time;
     /** This method is called periodically during autonomous. */
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+//        time ++;
+//        autonomousCommand = robotContainer.getAutonomousCommand("Leo Auto 1",time);
+//        autonomousCommand.schedule();
+    }
     
     
     @Override

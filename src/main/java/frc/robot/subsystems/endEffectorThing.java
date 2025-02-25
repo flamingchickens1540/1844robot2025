@@ -23,11 +23,11 @@ public class endEffectorThing extends SubsystemBase{
     
     
     public Command removeAlgae(double speed, double time){
-        return Commands.parallel(
-                Commands.runOnce(()->largeEndEffectorThingMotor.setVoltage(speed*12)),
-                Commands.runOnce(()->smallEndEffectorThingMotor.setVoltage(speed*12))
-        ).withTimeout(time).andThen(Commands.run(()->runBoth(0,0),
-                this));
+        return Commands.run(()->runBoth(0,speed),
+                this
+
+        ,
+                this);
 
 
     }
@@ -36,7 +36,7 @@ public class endEffectorThing extends SubsystemBase{
         if (inverted){
             return Commands.run(()->runBoth(speed,speed),
                             this
-                    ).withTimeout(time)
+                    )
                     .andThen(
                             Commands.run(()->runBoth(0,0),
                                     this)
@@ -45,7 +45,7 @@ public class endEffectorThing extends SubsystemBase{
         else {
             return Commands.run(()->runBoth(speed,speed),
                             this
-                    ).withTimeout(time)
+                    )
                     .andThen(
                             Commands.run(()->runBoth(0,0),
                                     this)
@@ -56,7 +56,7 @@ public class endEffectorThing extends SubsystemBase{
         if (inverted){
             return Commands.run(()->runBoth(-speed,-speed),
                     this
-            ).withTimeout(time)
+            )
                     .andThen(
                             Commands.run(()->runBoth(0,0),
                                     this)
@@ -66,7 +66,7 @@ public class endEffectorThing extends SubsystemBase{
             return Commands.run(()->runBoth(-speed,-speed),
                             this
                     )
-                    .withTimeout(time)
+
                     .andThen(
                             Commands.run(()->runBoth(0,0),
                                     this)

@@ -363,7 +363,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
         });
     }
         public Command Zero() {
-        return Commands.run(
+        return Commands.runOnce(
                 ()->{
                     this.resetRotation(Rotation2d.fromDegrees(0));
                 }
@@ -374,17 +374,23 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     public Command moveABitForward(double amount) {
         return applyRequest(()-> {
             SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric();
-            request.VelocityY = amount;
+            request.VelocityX = amount;
             return request;
-        });
+        }).withTimeout(2);
     }
     public Command setVelocityAndRotationalRate(double VelocityX, double VelocityY, double RotationalRate){
         return applyRequest(()->{
-            SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric();
+            SwerveRequest.FieldCentric request = new SwerveRequest.FieldCentric();
             request.VelocityX = VelocityX;
             request.VelocityY = VelocityY;
             request.RotationalRate = RotationalRate;
             return request;
         });
     }
+    public Command setOdometry(Pose2d setPose){
+        return Commands.runOnce(()->{
+            this.resetPose(setPose);
+        });
+    }
+
 }
