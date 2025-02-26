@@ -5,12 +5,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -33,7 +29,7 @@ public class RobotContainer
      //Replace with CommandPS4Controller or CommandJoystick if needed
     public final frc.robot.subsystems.endEffectorThing endEffectorThing = new endEffectorThing();
     public final CommandXboxController controller = new CommandXboxController(0);
-    public final frc.robot.subsystems.pushyThing pushyThing = new pushyThing();
+    public final indexer indexer = new indexer();
     public final frc.robot.subsystems.shooter shooter = new shooter();
     public final frc.robot.subsystems.Arm arm = new Arm();
     public final CommandSwerveDrivetrain drivetrain;
@@ -104,7 +100,8 @@ public class RobotContainer
 
 
 
-        controller.leftTrigger().whileTrue(pushyThing.Push(-0.5));
+        //need to figure out button bindings to set indexer into brake mode
+        controller.leftTrigger().whileTrue(indexer.Push(-0.5));
     
         controller.rightTrigger().whileTrue(shooter.spinFull());
         //controller.a().whileTrue(Commands.print("I work"));
