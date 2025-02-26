@@ -36,21 +36,20 @@ class AutoChoices {
     private static SendableChooser<String> example;
     private static SendableChooser<String> start;
     private static SendableChooser<String> next1;
-    private static SendableChooser<String> end;
+    private static SendableChooser<String> leo;
 
     public AutoChoices() {
         // Initialize the SendableChooser
         example = new SendableChooser<>();
         start = new SendableChooser<>();
         next1 = new SendableChooser<>();
+        leo = new SendableChooser<>();
         // Set default option and add additional options
-        example.setDefaultOption("nothing", "Default");
-        example.addOption("example", "exampleAuto");
-        start.setDefaultOption("Nothing","nothing");
-        start.addOption("Buddy Auto","buddy_auto");
-        next1.setDefaultOption("Nothing","nothing");
-        next1.setDefaultOption("Score Reef","score_reef");
+        leo.addOption("Leo Auto 1","Leo Auto 1");
 
+        leo.addOption("Leo Auto 2","Leo Auto 2");
+
+        leo.addOption("Leo Auto 3","Leo Auto 3");
 
         // Add the chooser to the SmartDashboard
         SmartDashboard.putData("Auto Choices", example);
@@ -58,8 +57,8 @@ class AutoChoices {
 
     // Method to get the selected option
 
-    public static String example()  {
-        return example.getSelected();
+    public static String getLeoAuto()  {
+        return leo.getSelected();
     }
 
 }
@@ -120,7 +119,7 @@ public class Robot extends TimedRobot
     public void autonomousInit()
     {
 
-        autonomousCommand = robotContainer.getAutonomousCommand("Leo Auto 1.traj",time);
+        autonomousCommand = robotContainer.getAutonomousCommand(AutoChoices.getLeoAuto(),time);
 
         // schedule the autonomous command (example)
         if (autonomousCommand != null)
@@ -132,11 +131,7 @@ public class Robot extends TimedRobot
     int time;
     /** This method is called periodically during autonomous. */
     @Override
-    public void autonomousPeriodic() {
-//        time ++;
-//        autonomousCommand = robotContainer.getAutonomousCommand("Leo Auto 1",time);
-//        autonomousCommand.schedule();
-    }
+    public void autonomousPeriodic() {}
     
     
     @Override

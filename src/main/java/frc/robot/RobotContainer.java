@@ -6,27 +6,21 @@
 package frc.robot;
 
 import choreo.Choreo;
+import choreo.auto.AutoFactory;
+import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.generated.TunerConstants;
+import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import java.nio.file.Path;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 
 import static frc.robot.generated.TunerConstants.*;
@@ -43,23 +37,29 @@ public class RobotContainer
 {
     // The robot's subsystems and commands are defined here...
 
-    
      //Replace with CommandPS4Controller or CommandJoystick if needed
     public final frc.robot.subsystems.endEffectorThing endEffectorThing = new endEffectorThing();
     public final CommandXboxController controller = new CommandXboxController(0);
     public final frc.robot.subsystems.pushyThing pushyThing = new pushyThing();
     public final frc.robot.subsystems.shooter shooter = new shooter();
-    public final frc.robot.subsystems.Arm arm = new Arm();
-    public final CommandSwerveDrivetrain drivetrain;
+    public final Arm arm = new Arm();
+    public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);;
     public final CommandXboxController scontroller = new CommandXboxController(1);
     public final XboxController xboxController = new XboxController(0);
+    AutoFactory autoFactory = new AutoFactory(
+            ()->drivetrain.getState().Pose,
+            (Pose2d pose2d)->drivetrain.resetPose(pose2d),
+            (SwerveSample sample)->drivetrain.setVelocityAndRotationalRate(sample.vx,sample.vy,sample.omega),
+            false,
+            drivetrain
+
+    );
     
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer()
     {
         configureBindings();
-        drivetrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
-            FrontRight, BackLeft, BackRight);;
+
 //        drivetrain.setDefaultCommand(drivetrain.commandDrive(controller.getHID()));
 
         // Configure the trigger bindings
@@ -70,17 +70,17 @@ public class RobotContainer
     }
 
     public RobotContainer(CommandSwerveDrivetrain drivetrain) {
-        this.drivetrain = drivetrain;
+
     }
 
 
     /**
      * Use this method to define your trigger->command mappings. Triggers can be created via the
-     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+     * {@link Trigger#Trigger(BooleanSupplier)} constructor with an arbitrary
      * predicate, or via the named factories in {@link
-     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-     * CommandXboxController Xbox}/{@link  edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-     * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * CommandGenericHID}'s subclasses for {@link
+     * CommandXboxController Xbox}/{@link  CommandPS4Controller
+     * PS4} controllers or {@link CommandJoystick Flight
      * joysticks}.
      */
     private void configureBindings() {
@@ -124,7 +124,7 @@ public class RobotContainer
         scontroller.rightBumper().whileFalse(endEffectorThing.Stop());
         scontroller.rightTrigger().whileTrue(endEffectorThing.outputCoral(false,1,3));
         scontroller.rightTrigger().whileFalse(endEffectorThing.Stop());
-        TunerConstants.DriveTrain.setDefaultCommand(TunerConstants.DriveTrain.commandDrive(controller.getHID()));
+        DriveTrain.setDefaultCommand(DriveTrain.commandDrive(controller.getHID()));
         //controller.a().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(20)));
         scontroller.x().whileTrue(pushyThing.Push(1,-0.999));
         scontroller.x().whileFalse(pushyThing.Stop());
@@ -138,36 +138,15 @@ public class RobotContainer
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand(String trajname, double timestamp) {
-//        try {
-//            // Load the trajectory file
-            Trajectory trajectory = Choreo.loadTrajectory("main/deploy/Choreo/"+trajname).get();
-//
-//        DriverStation.Alliance alliance = DriverStation.getAlliance().get();
-//        var mirrorForRedAlliance = false;
-//        switch (alliance){
-//            case Red:
-//                mirrorForRedAlliance = true;
-//                break;
-//            case Blue:
-//                mirrorForRedAlliance = false;
-//        }
-//        DriveTrain.setOdometry((Pose2d) trajectory.getInitialPose(mirrorForRedAlliance).get());
-//            // Loop through trajectory points and send speeds to the swerve drive
-//
-//                double[] doubleMatrix =TrajectoryUtils.getVelocitiesAtTime(trajectory,timestamp);
-//                return DriveTrain.setVelocityAndRotationalRate(doubleMatrix[0],doubleMatrix[1],doubleMatrix[2]);// Command the robot to follow the trajectory
-//
-//
-//
-//
-//
-//        } catch (Exception e) {
-//            System.out.println(e);
-//            return Commands.runOnce(()->{
-//
-//            });
-//        }
-        return DriveTrain.moveABitForward(1);
+try {
+    Trajectory trajectory = Choreo.loadTrajectory("main/deploy/Choreo/" + trajname).get();
+    return autoFactory.trajectoryCmd(trajectory);
+
+}
+catch (Error e){
+    System.out.println(e);
+    return DriveTrain.moveABitForward(1);
+}
 
     }
 }
