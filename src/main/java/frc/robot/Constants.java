@@ -17,6 +17,8 @@ import edu.wpi.first.math.geometry.Pose3d;
  */
 public final class Constants
 {
+    public static final boolean isTuningMode = true;
+    
     public static class OperatorConstants
     {
         public static final int DRIVER_CONTROLLER_PORT = 0;
@@ -27,12 +29,15 @@ public final class Constants
         public static final double GEAR_RATIO = 1;
     }
     public static class pushyThing{
-        public static final int MOTOR_ID = 0;
-        public static final int GEARING = 1;
+        public static final int MOTOR_ID = 9;
     }
     public static class Arm{
-        public static final int MOTOR_ID = 0;
-        public static final double GEAR_RATIO = 0;
+        public static final int MOTOR_ID =21;
+        public static final int MOTOR_ID2 = 51;
+        public static final int SENSOR_ID = 0; //todo
+        public static final double SENSOR_TO_PIVOT = 3/1; 
+        public static final double MOTOR_TO_SENSOR = 3/1*3/1*4/1*3/1; 
+        
     }
     public static class smallEndEffectorThing {
         public static final int MOTOR_ID = 0;

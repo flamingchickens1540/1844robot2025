@@ -37,39 +37,88 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+        drivetrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
+            FrontRight, BackLeft, BackRight);;
+            //this isnt doing anything??
+            //what exactly is end effector?
+            controller.a().whileTrue(endEffectorThing.runFrontMotor());
+
+            controller.leftBumper().whileTrue(arm.commandToSetpoint(Rotation2d.fromDegrees(0)));
+//        drivetrain.setDefaultCommand(drivetrain.commandDrive(controller.getHID()));
+
+            //trying something below - did not work
+            //what is use of intakeCoral function??
+            controller.a().whileTrue(endEffectorThing.intakeCoral(false, 0.5, 5));
+            //this is to enable drivetrain:
+
+        // Configure the trigger bindings
+        SmartDashboard.putNumber("x",0);
+        SmartDashboard.putNumber("b",0);
+        SmartDashboard.putNumber("y",0);
+
     }
 
+    public RobotContainer(CommandSwerveDrivetrain drivetrain) {
+        this.drivetrain = drivetrain;
+    }
+
+
+    /**
+     * Use this method to define your trigger->command mappings. Triggers can be created via the
+     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+     * predicate, or via the named factories in {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+     * CommandXboxController Xbox}/{@link  edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+     * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * joysticks}.
+     */
     private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
-        );
+        //pose go to
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        arm.setDefaultCommand(arm.commandMoveSpeed(controller));
+        //controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(2000)));
+       controller. y().whileTrue(arm.commandToSetpoint(Rotation2d.fromDegrees(SmartDashboard.getNumber("y",0))));
+       controller.x().whileTrue(arm.commandToSetpoint(Rotation2d.fromDegrees(SmartDashboard.getNumber("b",0))));
+        //pose go to
+        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+        System.out.println("button bindings are being worked");
 
-        // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+        // cancelling on release.
+        //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand());
+//        controller.a().whileTrue(shooter.spinFullUntil(100).andThen(pushyThing.Push(1,0.5)).alongWith(shooter.spinFullUntil(1)));
+//        controller.b().whileTrue(Commands.print("I also work"));
+        //new Trigger(()->true).whileTrue(Commands.runOnce(()-> System.out.println("it is Command.print")));
+//        controller.a().whileTrue(Commands.runOnce(()->{
+//            System.out.println("how abt this?");
+//
+//        }));
+//        Command command = Commands.runOnce(()-> System.out.println("hello world"));
+//        controller.b().whileTrue(command);
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+
+
+        controller.leftTrigger().whileTrue(pushyThing.Push(-0.5));
+    
+        controller.rightTrigger().whileTrue(shooter.spinFull());
+        //controller.a().whileTrue(Commands.print("I work"));
+
+
+
+
     }
 
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+
+    
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand()
+    {
+        // An example command will be run in autonomous
+        return null;
     }
 }
