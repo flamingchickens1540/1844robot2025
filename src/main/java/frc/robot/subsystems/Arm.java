@@ -121,10 +121,6 @@ public Rotation2d getPosition(){
 
     }
 
-    public void setSetpoint(Rotation2d motorPosition) {
-        armMotor.setControl(positionCtrlReq.withPosition(motorPosition.getRotations()));
-    }
-
     public Command commandSetToZero(){
         //offSet = armMotor.getPosition().refresh().getValueAsDouble();
         return Commands.run(
