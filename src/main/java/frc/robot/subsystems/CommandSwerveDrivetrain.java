@@ -210,7 +210,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
      * @return Command to run
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
+        return Commands.run(() -> this.setControl(requestSupplier.get()),this);
     }
 
     /**
@@ -398,5 +398,11 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
             this.resetPose(setPose);
         });
     }
-
+    public void setVelocityAndRotationalRate(double VelocityX, double VelocityY, double RotationalRate, boolean hi){
+        SwerveRequest.FieldCentric request = new SwerveRequest.FieldCentric();
+        request.VelocityX = VelocityX;
+        request.VelocityY = VelocityY;
+        request.RotationalRate = RotationalRate;
+        setControl(request);
+    }
 }

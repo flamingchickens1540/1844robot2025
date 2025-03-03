@@ -286,6 +286,8 @@ public class TunerConstants {
         }
 
     }
-    public static final CommandSwerveDrivetrain DriveTrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
-            FrontRight, BackLeft, BackRight);
+//    private static final CommandSwerveDrivetrain DriveTrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
+//            FrontRight, BackLeft, BackRight);
+    public static final double MASS_KG =54.4311;
+    //public static final double ROBOT_MOI_KGM2 = ;
 }

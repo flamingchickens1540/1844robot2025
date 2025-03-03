@@ -1,25 +1,24 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class endEffectorThing extends SubsystemBase{
-    private final SparkMax largeEndEffectorThingMotor = new SparkMax(Constants.largeEndEffectorThing.MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
-    public final SparkMax smallEndEffectorThingMotor = new SparkMax(Constants.smallEndEffectorThing.MOTOR_ID1, SparkLowLevel.MotorType.kBrushless);
-    
+    private final TalonFX largeEndEffectorThingMotor = new TalonFX(Constants.largeEndEffectorThing.MOTOR_ID);
+    public final TalonFX smallEndEffectorThingMotor = new TalonFX(Constants.smallEndEffectorThing.MOTOR_ID1);
+
     public endEffectorThing(){
-        SparkMaxConfig largeEndEffectorThingMotorConfig =new SparkMaxConfig();
-        largeEndEffectorThingMotorConfig.smartCurrentLimit(40);
-        largeEndEffectorThingMotorConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
-        largeEndEffectorThingMotor.configure(largeEndEffectorThingMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-    }
+        TalonFXConfiguration config =new TalonFXConfiguration();
+        config.CurrentLimits.StatorCurrentLimit = 40;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        largeEndEffectorThingMotor.getConfigurator().apply(config);
+        smallEndEffectorThingMotor.getConfigurator().apply(config);    }
     
     
     public Command removeAlgae(double speed, double time){

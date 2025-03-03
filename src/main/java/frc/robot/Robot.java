@@ -45,7 +45,7 @@ class AutoChoices {
         next1 = new SendableChooser<>();
         leo = new SendableChooser<>();
         // Set default option and add additional options
-        leo.addOption("Leo Auto 1","Leo Auto 1");
+        leo.setDefaultOption("Leo Auto 1","New Path");
 
         leo.addOption("Leo Auto 2","Leo Auto 2");
 
@@ -119,7 +119,7 @@ public class Robot extends TimedRobot
     public void autonomousInit()
     {
 
-        autonomousCommand = robotContainer.getAutonomousCommand(AutoChoices.getLeoAuto(),time);
+        autonomousCommand = robotContainer.getAutonomousCommand(AutoChoices.getLeoAuto());
 
         // schedule the autonomous command (example)
         if (autonomousCommand != null)

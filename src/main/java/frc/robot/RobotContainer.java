@@ -5,17 +5,11 @@
 
 package frc.robot;
 
-import choreo.Choreo;
-import choreo.auto.AutoFactory;
-import choreo.trajectory.SwerveSample;
-import choreo.trajectory.Trajectory;
-
-import edu.wpi.first.math.geometry.Pose2d;
-
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,39 +27,32 @@ import static frc.robot.generated.TunerConstants.*;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer
-{
+public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
-     //Replace with CommandPS4Controller or CommandJoystick if needed
+    //Replace with CommandPS4Controller or CommandJoystick if needed
     public final frc.robot.subsystems.endEffectorThing endEffectorThing = new endEffectorThing();
     public final CommandXboxController controller = new CommandXboxController(0);
     public final frc.robot.subsystems.pushyThing pushyThing = new pushyThing();
     public final frc.robot.subsystems.shooter shooter = new shooter();
     public final Arm arm = new Arm();
-    public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);;
     public final CommandXboxController scontroller = new CommandXboxController(1);
     public final XboxController xboxController = new XboxController(0);
-    AutoFactory autoFactory = new AutoFactory(
-            ()->drivetrain.getState().Pose,
-            (Pose2d pose2d)->drivetrain.resetPose(pose2d),
-            (SwerveSample sample)->drivetrain.setVelocityAndRotationalRate(sample.vx,sample.vy,sample.omega),
-            false,
-            drivetrain
+    public final CTREAutoUtils drivetrain = new CTREAutoUtils();
+    public final LEDs leDs = new LEDs();
 
-    );
-    
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer()
-    {
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
         configureBindings();
 
 //        drivetrain.setDefaultCommand(drivetrain.commandDrive(controller.getHID()));
 
         // Configure the trigger bindings
-        SmartDashboard.putNumber("x",0);
-        SmartDashboard.putNumber("b",0);
-        SmartDashboard.putNumber("y",0);
+        SmartDashboard.putNumber("x", 0);
+        SmartDashboard.putNumber("b", 0);
+        SmartDashboard.putNumber("y", 0);
 
     }
 
@@ -85,8 +72,9 @@ public class RobotContainer
      */
     private void configureBindings() {
         //pose go to
-        controller.rightBumper().whileTrue(DriveTrain.Zero());
+        controller.rightBumper().whileTrue(CTREAutoUtils.drivetrain.Zero());
         arm.setDefaultCommand(arm.commandMoveSpeed(scontroller));
+
         //controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(2000)));
         //controller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("y",0))));
         //controller.b().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("b",0))));
@@ -106,47 +94,41 @@ public class RobotContainer
 //        }));
 //        Command command = Commands.runOnce(()-> System.out.println("hello world"));
 //        controller.b().whileTrue(command);
+        controller.start().whileTrue(leDs.commandSetToGreen());
+        controller.back().whileTrue(leDs.commandSetToRed());
+        controller.y().whileTrue(leDs.commandSetToPurple());
+        controller.b().whileTrue(leDs.commandSetToRainbow());
 
-
-        scontroller.a().whileTrue(endEffectorThing.removeAlgae(1,1));
+        scontroller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(0)));
+        scontroller.a().whileTrue(endEffectorThing.removeAlgae(1, 1));
         scontroller.a().whileFalse(endEffectorThing.Stop());
         scontroller.leftTrigger().whileTrue(shooter.spinFullUntil(3)
-                .andThen(pushyThing.Push(1, -0.5)
-                        .alongWith(shooter.spinFullUntil(1)).withTimeout(1)));
-        scontroller.leftTrigger().whileFalse(pushyThing.Stop());
-        scontroller.leftBumper().whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3,0.1)));
+                .andThen(leDs.commandSetToGreen())
+                        .alongWith(shooter.spinFullUntil(1)).withTimeout(1));
+        scontroller.leftTrigger().whileFalse(pushyThing.Stop().andThen(leDs.commandSetToRed()));
+        scontroller.leftBumper().whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3, 0.1)));
         scontroller.leftBumper().whileFalse(pushyThing.Stop().andThen(shooter.Stop()));
         //controller.rightTrigger().whileTrue(shooter.spinFullUntil(100));
         //controller.a().whileTrue(Commands.print("I work"));
         //controller.leftBumper().whileTrue(DriveTrain.commandTurnAndDrive(1, Rotation2d::new));
 
-        scontroller.rightBumper().whileTrue(endEffectorThing.intakeCoral(true,1,3));
+        scontroller.rightBumper().whileTrue(endEffectorThing.
+                intakeCoral(true, 1, 3));
         scontroller.rightBumper().whileFalse(endEffectorThing.Stop());
-        scontroller.rightTrigger().whileTrue(endEffectorThing.outputCoral(false,1,3));
+        scontroller.rightTrigger().whileTrue(endEffectorThing.outputCoral(false, 1, 3));
         scontroller.rightTrigger().whileFalse(endEffectorThing.Stop());
-        DriveTrain.setDefaultCommand(DriveTrain.commandDrive(controller.getHID()));
+        CTREAutoUtils.drivetrain.setDefaultCommand(CTREAutoUtils.drivetrain.commandDrive(controller.getHID()));
         //controller.a().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(20)));
-        scontroller.x().whileTrue(pushyThing.Push(1,-0.999));
+        scontroller.x().whileTrue(pushyThing.Push(1, -1));
         scontroller.x().whileFalse(pushyThing.Stop());
+
     }
 
 
-    
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand(String trajname, double timestamp) {
-try {
-    Trajectory trajectory = Choreo.loadTrajectory("main/deploy/Choreo/" + trajname).get();
-    return autoFactory.trajectoryCmd(trajectory);
-
-}
-catch (Error e){
-    System.out.println(e);
-    return DriveTrain.moveABitForward(1);
-}
-
-    }
+    public Command getAutonomousCommand(String trajname) {return drivetrain.orderTrajectory(trajname);}
 }
