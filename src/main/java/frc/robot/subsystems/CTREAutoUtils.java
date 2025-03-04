@@ -35,7 +35,7 @@ public class CTREAutoUtils {
     autoFactory = new AutoFactory(
             () -> drivetrain.getState().Pose,
             (Pose2d pose2d) -> drivetrain.resetPose(pose2d),
-            (SwerveSample sample) -> drivetrain.setVelocityAndRotationalRate(sample.vx, sample.vy, sample.omega,true),
+            (SwerveSample sample) -> drivetrain.setVelocityAndRotationalRate(sample.vx/3.28084, sample.vy/3.28084, sample.omega/3.28084,true),
             isOnRedSide,
             drivetrain
 

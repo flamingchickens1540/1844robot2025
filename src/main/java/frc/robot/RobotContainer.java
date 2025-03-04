@@ -71,56 +71,38 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        //pose go to
-        controller.rightBumper().whileTrue(CTREAutoUtils.drivetrain.Zero());
-        arm.setDefaultCommand(arm.commandMoveSpeed(scontroller));
 
-        //controller.x().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(2000)));
-        //controller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("y",0))));
-        //controller.b().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(SmartDashboard.getNumber("b",0))));
-        //pose go to
-        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-        System.out.println("button bindings are being worked");
+        controller.rightBumper().whileTrue(CTREAutoUtils.drivetrain.Zero());//Zero out the drivetrain
 
-        // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-        // cancelling on release.
-        //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand());
-//        controller.a().whileTrue(shooter.spinFullUntil(100).andThen(pushyThing.Push(1,0.5)).alongWith(shooter.spinFullUntil(1)));
-//        controller.b().whileTrue(Commands.print("I also work"));
-        //new Trigger(()->true).whileTrue(Commands.runOnce(()-> System.out.println("it is Command.print")));
-//        controller.a().whileTrue(Commands.runOnce(()->{
-//            System.out.println("how abt this?");
-//
-//        }));
-//        Command command = Commands.runOnce(()-> System.out.println("hello world"));
-//        controller.b().whileTrue(command);
-        controller.start().whileTrue(leDs.commandSetToGreen());
-        controller.back().whileTrue(leDs.commandSetToRed());
-        controller.y().whileTrue(leDs.commandSetToPurple());
-        controller.b().whileTrue(leDs.commandSetToRainbow());
+        arm.setDefaultCommand(arm.commandMoveSpeed(scontroller));//manual arm control
 
-        scontroller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(0)));
-        scontroller.a().whileTrue(endEffectorThing.removeAlgae(1, 1));
-        scontroller.a().whileFalse(endEffectorThing.Stop());
-        scontroller.leftTrigger().whileTrue(shooter.spinFullUntil(3)
-                .andThen(leDs.commandSetToGreen())
-                        .alongWith(shooter.spinFullUntil(1)).withTimeout(1));
-        scontroller.leftTrigger().whileFalse(pushyThing.Stop().andThen(leDs.commandSetToRed()));
-        scontroller.leftBumper().whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3, 0.1)));
-        scontroller.leftBumper().whileFalse(pushyThing.Stop().andThen(shooter.Stop()));
-        //controller.rightTrigger().whileTrue(shooter.spinFullUntil(100));
-        //controller.a().whileTrue(Commands.print("I work"));
-        //controller.leftBumper().whileTrue(DriveTrain.commandTurnAndDrive(1, Rotation2d::new));
+        controller.start().whileTrue(leDs.commandSetToGreen());//Leds
+        controller.back().whileTrue(leDs.commandSetToRed());//Leds
+        controller.y().whileTrue(leDs.commandSetToPurple());//Leds
+        controller.b().whileTrue(leDs.commandSetToRainbow());//Leds
 
-        scontroller.rightBumper().whileTrue(endEffectorThing.
-                intakeCoral(true, 1, 3));
-        scontroller.rightBumper().whileFalse(endEffectorThing.Stop());
-        scontroller.rightTrigger().whileTrue(endEffectorThing.outputCoral(false, 1, 3));
-        scontroller.rightTrigger().whileFalse(endEffectorThing.Stop());
-        CTREAutoUtils.drivetrain.setDefaultCommand(CTREAutoUtils.drivetrain.commandDrive(controller.getHID()));
-        //controller.a().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(20)));
-        scontroller.x().whileTrue(pushyThing.Push(1, -1));
-        scontroller.x().whileFalse(pushyThing.Stop());
+        scontroller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(0)));//arm to zero
+
+        scontroller.a().whileTrue(endEffectorThing.removeAlgae(1, 1));//remove algea
+        scontroller.a().whileFalse(endEffectorThing.Stop());//my bad code remove algea
+
+        scontroller.leftTrigger().whileTrue(shooter.spinFullUntil(3)//shoot
+                .andThen(leDs.commandSetToGreen())//shoot
+                        .alongWith(shooter.spinFullUntil(1)).withTimeout(1));//shoot
+        scontroller.leftTrigger().whileFalse(pushyThing.Stop().andThen(leDs.commandSetToRed()));//my bad code shoot
+
+        scontroller.leftBumper().whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3, 0.1)));//a thing
+        scontroller.leftBumper().whileFalse(pushyThing.Stop().andThen(shooter.Stop()));//my bad code a thing
+
+        scontroller.rightBumper().whileTrue(endEffectorThing.intakeCoral(true, 1, 3));//intake coral
+        scontroller.rightBumper().whileFalse(endEffectorThing.Stop());//my bad code intake coral
+
+        scontroller.rightTrigger().whileTrue(endEffectorThing.outputCoral(false, 1, 3));//score coral
+        scontroller.rightTrigger().whileFalse(endEffectorThing.Stop());//my bad code score coral
+
+        CTREAutoUtils.drivetrain.setDefaultCommand(CTREAutoUtils.drivetrain.commandDrive(controller.getHID()));//move the drivetrain
+        scontroller.x().whileTrue(pushyThing.Push(1, -1));//a thing
+        scontroller.x().whileFalse(pushyThing.Stop());//my bad code a thing
 
     }
 
@@ -130,5 +112,14 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand(String trajname) {return drivetrain.orderTrajectory(trajname);}
+    public Command getAutonomousCommand() {
+        Command auto = Commands.run(
+                ()->drivetrain.orderTrajectory(AutoChoices.getLeoAuto())
+                        .andThen(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(20)))
+                                .andThen(endEffectorThing.outputCoral(false,1,3))
+                                        .withTimeout(2)
+                                                .andThen(drivetrain.orderTrajectory("get out of the way"))
+        );
+        return auto;
+    }
 }

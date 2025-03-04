@@ -33,26 +33,22 @@ import java.nio.file.Path;
  */
 class AutoChoices {
 
-    private static SendableChooser<String> example;
     private static SendableChooser<String> start;
     private static SendableChooser<String> next1;
     private static SendableChooser<String> leo;
 
     public AutoChoices() {
         // Initialize the SendableChooser
-        example = new SendableChooser<>();
         start = new SendableChooser<>();
         next1 = new SendableChooser<>();
         leo = new SendableChooser<>();
         // Set default option and add additional options
-        leo.setDefaultOption("Leo Auto 1","New Path");
-
-        leo.addOption("Leo Auto 2","Leo Auto 2");
-
-        leo.addOption("Leo Auto 3","Leo Auto 3");
+         leo.setDefaultOption("Leo Auto 1","Leo Auto 1");
+         leo.addOption("Leo Auto 2","Leo Auto 2");
+         leo.addOption("Leo Auto 3","Leo Auto 3");
 
         // Add the chooser to the SmartDashboard
-        SmartDashboard.putData("Auto Choices", example);
+        SmartDashboard.putData("Auto Choices", leo);
     }
 
     // Method to get the selected option
@@ -79,8 +75,6 @@ public class Robot extends TimedRobot
         // autonomous chooser on the dashboard.
 
         robotContainer = new RobotContainer();
-        System.out.println("Instantiating robot");
-        Pose2d robotPosFromCam = new Pose2d();
 
     }
     
@@ -119,7 +113,7 @@ public class Robot extends TimedRobot
     public void autonomousInit()
     {
 
-        autonomousCommand = robotContainer.getAutonomousCommand(AutoChoices.getLeoAuto());
+        autonomousCommand = robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
         if (autonomousCommand != null)
