@@ -84,7 +84,7 @@ public class Arm extends SubsystemBase {
       SmartDashboard.putNumber("Arm/Setpoint/GroundAlgaeIntake", 0);
       SmartDashboard.putNumber("Arm/Setpoint/L1Coral", 135);
       SmartDashboard.putNumber("Arm/Setpoint/GroundCoralIntake", 60);
-      SmartDashboard.getNumber("Arm/Setpoint/HumanPlayerIntake", 0);
+      SmartDashboard.putNumber("Arm/Setpoint/HumanPlayerIntake", 0);
   }
 
 public Rotation2d getPosition(){
