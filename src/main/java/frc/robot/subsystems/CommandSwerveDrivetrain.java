@@ -9,10 +9,7 @@ import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -387,9 +384,10 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     public Command setVelocityAndRotationalRate(double VelocityX, double VelocityY, double RotationalRate){
         return applyRequest(()->{
             SwerveRequest.FieldCentric request = new SwerveRequest.FieldCentric();
-            request.VelocityX = VelocityX;
-            request.VelocityY = VelocityY;
-            request.RotationalRate = RotationalRate;
+            request.DriveRequestType = SwerveModule.DriveRequestType.Velocity;
+            request.VelocityX = VelocityX*2;
+            request.VelocityY = VelocityY*2;
+            request.RotationalRate = RotationalRate*2;
             return request;
         });
     }
@@ -400,9 +398,9 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     }
     public void setVelocityAndRotationalRate(double VelocityX, double VelocityY, double RotationalRate, boolean hi){
         SwerveRequest.FieldCentric request = new SwerveRequest.FieldCentric();
-        request.VelocityX = VelocityX;
-        request.VelocityY = VelocityY;
-        request.RotationalRate = RotationalRate;
+        request.VelocityX = VelocityX*2;
+        request.VelocityY = VelocityY*2;
+        request.RotationalRate = RotationalRate*2;
         setControl(request);
     }
 }

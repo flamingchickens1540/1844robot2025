@@ -37,10 +37,9 @@ public class LEDs extends SubsystemBase {
         lEDs.setData(buffer);
     }
     private void setToRainbow(){
-        LEDPattern m_rainbow = LEDPattern.rainbow(255, 256);
+        LEDPattern m_rainbow = LEDPattern.rainbow(255, 128);
         Distance kLedSpacing = Meters.of(1 / 12.0);
-        LEDPattern m_scrollingRainbow =
-                m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
+        LEDPattern m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
         m_scrollingRainbow.applyTo(buffer);
         lEDs.setData(buffer);
     }

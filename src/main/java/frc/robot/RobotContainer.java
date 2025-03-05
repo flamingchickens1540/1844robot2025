@@ -88,7 +88,7 @@ public class RobotContainer {
 
         scontroller.leftTrigger().whileTrue(shooter.spinFullUntil(3)//shoot
                 .andThen(leDs.commandSetToGreen())//shoot
-                        .alongWith(shooter.spinFullUntil(1)).withTimeout(1));//shoot
+                        .andThen(shooter.spinFullUntil(1)));//shoot
         scontroller.leftTrigger().whileFalse(pushyThing.Stop().andThen(leDs.commandSetToRed()));//my bad code shoot
 
         scontroller.leftBumper().whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3, 0.1)));//a thing
@@ -103,7 +103,7 @@ public class RobotContainer {
         CTREAutoUtils.drivetrain.setDefaultCommand(CTREAutoUtils.drivetrain.commandDrive(controller.getHID()));//move the drivetrain
         scontroller.x().whileTrue(pushyThing.Push(1, -1));//a thing
         scontroller.x().whileFalse(pushyThing.Stop());//my bad code a thing
-
+        controller.leftBumper().whileTrue(CTREAutoUtils.drivetrain.setVelocityAndRotationalRate(0,0,3.14/2));
     }
 
 
@@ -114,12 +114,13 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         Command auto = Commands.run(
-                ()->drivetrain.orderTrajectory(AutoChoices.getLeoAuto())
+                ()->drivetrain.orderTrajectory("Leo Auto 1")
                         .andThen(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(20)))
                                 .andThen(endEffectorThing.outputCoral(false,1,3))
                                         .withTimeout(2)
                                                 .andThen(drivetrain.orderTrajectory("get out of the way"))
         );
-        return auto;
+        return drivetrain.orderTrajectory("Leo Auto 1");
     }
+
 }
