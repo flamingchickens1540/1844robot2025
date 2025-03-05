@@ -3,10 +3,12 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,6 +25,16 @@ public class Arm extends SubsystemBase {
       L1_CORAL(() -> SmartDashboard.getNumber("Arm/Setpoint/L1Coral", 135)),
       HUMAN_PLAYER_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/HumanPlayerIntake", 0));
 
+/*
+ * Algae ground : 29.4
+ * Coral Ground : 38.3
+ * Coral L1: 25.2
+ * Coral L2: 13.5
+ * Coral L3: -1.14
+ * Algae shooting : 31.5
+ * Station intake: -8.8
+ **/
+
       private final DoubleSupplier positionDegrees;
 
       ArmState(DoubleSupplier positionDegrees) {
@@ -35,14 +47,19 @@ public class Arm extends SubsystemBase {
   }
 
 
-  private final TalonFX armMotor = new TalonFX(Constants.Arm.MOTOR_ID);
-  private final TalonFX armMotor1 = new TalonFX(Constants.Arm.MOTOR_ID2);
+
+  private final TalonFX armMotor = new TalonFX(Constants.Arm.MOTOR_ID2);
+  private final TalonFX armMotor1 = new TalonFX(Constants.Arm.MOTOR_ID);
   private final TalonFXConfiguration config = new TalonFXConfiguration();
   private final MotionMagicVoltage positionCtrlReq;
+  private Rotation2d setpoint = Rotation2d.kZero;
+  private final DutyCycleEncoder encoder = new DutyCycleEncoder(0);
   //public final StatusSignal<ForwardLimitValue> limit;
   
       public Arm() {
-          
+    
+        
+      armMotor1.setControl(new Follower(Constants.Arm.MOTOR_ID, true));
       config.Feedback.SensorToMechanismRatio = Constants.Arm.SENSOR_TO_PIVOT * Constants.Arm.MOTOR_TO_SENSOR;
 
       config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
@@ -62,9 +79,9 @@ public class Arm extends SubsystemBase {
       slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
       slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
       slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-      slot0Configs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
-      slot0Configs.kI = 0; // no output for integrated error
-      slot0Configs.kD = 0; // A velocity error of 1 rps results in 0.1 V output
+      slot0Configs.kP = 65; // A position error of 2.5 rotations results in 12 V output
+      slot0Configs.kI = 7;// no output for integrated error
+      slot0Configs.kD = 0.1; //velocity error of 1 rps results in 0.1 V output
 
 // set Motion Magic settings
       var motionMagicConfigs = config.MotionMagic;
@@ -75,9 +92,11 @@ public class Arm extends SubsystemBase {
       config.MotorOutput.NeutralMode = NeutralModeValue.Brake; 
 
       armMotor.getConfigurator().apply(config);
-      armMotor.setPosition(0);
-      armMotor.setNeutralMode(NeutralModeValue.Brake);
-      armMotor1.setNeutralMode(NeutralModeValue.Brake);
+      armMotor.setPosition(encoder.get()/3);
+      armMotor1.setPosition(encoder.get()/3);
+      armMotor.setNeutralMode(NeutralModeValue.Coast);
+      armMotor1.setNeutralMode(NeutralModeValue.Coast);
+      
       positionCtrlReq = new MotionMagicVoltage(0).withSlot(0);
       
       SmartDashboard.putNumber("Arm/Setpoint/Stow", 120);
@@ -87,6 +106,10 @@ public class Arm extends SubsystemBase {
       SmartDashboard.putNumber("Arm/Setpoint/HumanPlayerIntake", 0);
   }
 
+  @Override
+  public void periodic() {
+      System.out.println(getPosition().getDegrees() + " " + setpoint.getDegrees());
+  }
 public Rotation2d getPosition(){
 
   return Rotation2d.fromRotations(armMotor.getPosition().getValueAsDouble());
@@ -105,15 +128,17 @@ public Rotation2d getPosition(){
   }
 
   public void setSetpoint(Rotation2d motorPosition) {
+    setpoint = motorPosition;
     armMotor.setControl(positionCtrlReq.withPosition(motorPosition.getRotations()));
 }
 
   public Command commandToSetpoint(Rotation2d location) {
       
       return Commands.runOnce(
-          ()->setSetpoint(location)
-      )
-      .andThen(Commands.waitUntil(()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() - location.getRotations())<=0.001)));
+          ()->setSetpoint(Rotation2d.fromDegrees(SmartDashboard.getNumber("lb", 2))),
+          this
+      );
+    //   .andThen(Commands.waitUntil(()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() - location.getRotations())<=0.001)));
   }
 
   public Command commandToSetpoint(ArmState armState){
@@ -127,4 +152,5 @@ public Rotation2d getPosition(){
       return Commands.run(
               ()->armMotor.setPosition(0));
   }
+
 }

@@ -36,7 +36,7 @@ public final class Constants
         public static final int MOTOR_ID2 = 51;
         public static final int SENSOR_ID = 0; //todo
         public static final double SENSOR_TO_PIVOT = 3/1; 
-        public static final double MOTOR_TO_SENSOR = 3/1*3/1*4/1*3/1; 
+        public static final double MOTOR_TO_SENSOR = 3*3*4*3; 
         
     }
     public static class smallEndEffectorThing {
