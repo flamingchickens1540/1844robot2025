@@ -19,11 +19,11 @@ import frc.robot.Constants;
 public class Arm extends SubsystemBase {
 
     public enum ArmState {
-      STOW(() -> SmartDashboard.getNumber("Arm/Setpoint/Stow", 120)),
-      GROUND_CORAL_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/GroundCoralIntake", 60)),
-      GROUND_ALGAE_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/GroundAlgaeIntake", 0)),
-      L1_CORAL(() -> SmartDashboard.getNumber("Arm/Setpoint/L1Coral", 135)),
-      HUMAN_PLAYER_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/HumanPlayerIntake", 0));
+      STOW(() -> SmartDashboard.getNumber("Arm/Setpoint/Stow", 16)),
+      GROUND_CORAL_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/GroundCoralIntake", 38.3)),
+      GROUND_ALGAE_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/GroundAlgaeIntake", 29.4)),
+      L1_CORAL(() -> SmartDashboard.getNumber("Arm/Setpoint/L1Coral", 25.2)),
+      HUMAN_PLAYER_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/HumanPlayerIntake", -8.8));
 
 /*
  * Algae ground : 29.4
@@ -35,7 +35,7 @@ public class Arm extends SubsystemBase {
  * Station intake: -8.8
  **/
 
-      private final DoubleSupplier positionDegrees;
+      public final DoubleSupplier positionDegrees;
 
       ArmState(DoubleSupplier positionDegrees) {
           this.positionDegrees = positionDegrees;
@@ -135,7 +135,7 @@ public Rotation2d getPosition(){
   public Command commandToSetpoint(Rotation2d location) {
       
       return Commands.runOnce(
-          ()->setSetpoint(Rotation2d.fromDegrees(SmartDashboard.getNumber("lb", 2))),
+          ()->setSetpoint(location),
           this
       );
     //   .andThen(Commands.waitUntil(()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() - location.getRotations())<=0.001)));
@@ -143,7 +143,7 @@ public Rotation2d getPosition(){
 
   public Command commandToSetpoint(ArmState armState){
 
-      return commandToSetpoint(armState.position());
+      return commandToSetpoint(Rotation2d.fromDegrees(armState.positionDegrees.getAsDouble()));
 
   }
 

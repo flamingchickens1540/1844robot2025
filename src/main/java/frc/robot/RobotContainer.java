@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Arm.ArmState;
 import frc.robot.subsystems.Arm;
 
 public class RobotContainer {
@@ -68,6 +69,12 @@ public class RobotContainer {
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+        joystick.b().whileTrue(arm.commandToSetpoint(ArmState.GROUND_ALGAE_INTAKE));
+        joystick.x().whileTrue(arm.commandToSetpoint(ArmState.GROUND_CORAL_INTAKE));
+        joystick.y().whileTrue(arm.commandToSetpoint(ArmState.HUMAN_PLAYER_INTAKE));
+        joystick.a().whileTrue(arm.commandToSetpoint(ArmState.L1_CORAL));
+
 
         // reset the field-centric heading on left bumper press
         // joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
