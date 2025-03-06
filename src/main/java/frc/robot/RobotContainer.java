@@ -74,14 +74,18 @@ public class RobotContainer {
 
         controller.rightBumper().whileTrue(CTREAutoUtils.drivetrain.Zero());//Zero out the drivetrain
 
-        arm.setDefaultCommand(arm.commandMoveSpeed(scontroller));//manual arm control
+        scontroller.start().and(scontroller.y()).whileTrue(arm.goToL2());
+        scontroller.start().and(scontroller.a()).whileTrue(arm.goToL3());
+        scontroller.start().and(scontroller.b()).whileTrue(arm.commandToSetpoint(Arm.ArmState.L1_CORAL));
+        scontroller.start().and(scontroller.x()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_ALGAE_INTAKE));
+        scontroller.start().and(scontroller.leftBumper()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_CORAL_INTAKE));
+        scontroller.start().and(scontroller.leftTrigger()).whileTrue(arm.commandToSetpoint(Arm.ArmState.HUMAN_PLAYER_INTAKE));
 
         controller.start().whileTrue(leDs.commandSetToGreen());//Leds
         controller.back().whileTrue(leDs.commandSetToRed());//Leds
         controller.y().whileTrue(leDs.commandSetToPurple());//Leds
         controller.b().whileTrue(leDs.commandSetToRainbow());//Leds
 
-        scontroller.y().whileTrue(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(0)));//arm to zero
 
         scontroller.a().whileTrue(endEffectorThing.removeAlgae(1, 1));//remove algea
         scontroller.a().whileFalse(endEffectorThing.Stop());//my bad code remove algea
@@ -115,7 +119,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         Command auto = Commands.run(
                 ()->drivetrain.orderTrajectory("Leo Auto 1")
-                        .andThen(arm.commandMotionMagicLoc(Rotation2d.fromDegrees(20)))
+                        .andThen(arm.commandToSetpoint(Arm.ArmState.L1_CORAL))
                                 .andThen(endEffectorThing.outputCoral(false,1,3))
                                         .withTimeout(2)
                                                 .andThen(drivetrain.orderTrajectory("get out of the way"))

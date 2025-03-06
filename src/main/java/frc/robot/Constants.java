@@ -31,6 +31,7 @@ public final class Constants
         public static final int MOTOR_ID = 21;
         public static final double GEAR_RATIO = (double) 4*3*3*3;
         public static final int MOTOR_ID2 = 51;
+
     }
     public static class smallEndEffectorThing {
         public static final int MOTOR_ID1 = 8;
