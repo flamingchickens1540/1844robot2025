@@ -38,8 +38,5 @@ public class indexer extends SubsystemBase {
         );
     }
 
-    //are we adding a method to be more specific with indexer and algae pos using Laser CAN???
-    public void outtake()
-    {}
 }
  

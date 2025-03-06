@@ -21,7 +21,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
  */
 class AutoChoices {
 
+    //changed SendableChooser variable name from example to chooser
     private static SendableChooser<String> example;
+    //why three? don't we only need one??
     private static SendableChooser<String> start;
     private static SendableChooser<String> next1;
     private static SendableChooser<String> end;
@@ -38,14 +40,14 @@ class AutoChoices {
         start.addOption("Buddy Auto","buddy_auto");
         next1.setDefaultOption("Nothing","nothing");
         next1.setDefaultOption("Score Reef","score_reef");
-
+        next1.setDefaultOption("Score Algae", "score_algae");
 
         // Add the chooser to the SmartDashboard
         SmartDashboard.putData("Auto Choices", example);
     }
 
     // Method to get the selected option
-
+    //what do we do here?
     public static String example()  {
         return example.getSelected();
     }
