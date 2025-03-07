@@ -102,8 +102,8 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm/Setpoint/Stow", 16);
         SmartDashboard.putNumber("Arm/Setpoint/GroundAlgaeIntake", 29.4);
         SmartDashboard.putNumber("Arm/Setpoint/L1Coral", 25.2);
-        SmartDashboard.putNumber("Arm/Setpoint/GroundCoralIntake", 60);
-        SmartDashboard.putNumber("Arm/Setpoint/HumanPlayerIntake", 0);
+        SmartDashboard.putNumber("Arm/Setpoint/GroundCoralIntake", 83.3);
+        SmartDashboard.putNumber("Arm/Setpoint/HumanPlayerIntake", -8.8);
     }
 
     @Override
