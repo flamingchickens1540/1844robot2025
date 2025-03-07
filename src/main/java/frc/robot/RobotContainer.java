@@ -23,7 +23,7 @@ import static frc.robot.generated.TunerConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * "declarative" paradigm, very little robot logic should actually be handled in the
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
@@ -61,25 +61,19 @@ public class RobotContainer {
     }
 
 
-    /**
-     * Use this method to define your trigger->command mappings. Triggers can be created via the
-     * {@link Trigger#Trigger(BooleanSupplier)} constructor with an arbitrary
-     * predicate, or via the named factories in {@link
-     * CommandGenericHID}'s subclasses for {@link
-     * CommandXboxController Xbox}/{@link  CommandPS4Controller
-     * PS4} controllers or {@link CommandJoystick Flight
-     * joysticks}.
-     */
+
     private void configureBindings() {
 
         controller.rightBumper().whileTrue(CTREAutoUtils.drivetrain.Zero());//Zero out the drivetrain
 
-        scontroller.start().and(scontroller.y()).whileTrue(arm.goToL2());
-        scontroller.start().and(scontroller.a()).whileTrue(arm.goToL3());
-        scontroller.start().and(scontroller.b()).whileTrue(arm.commandToSetpoint(Arm.ArmState.L1_CORAL));
-        scontroller.start().and(scontroller.x()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_ALGAE_INTAKE));
-        scontroller.start().and(scontroller.leftBumper()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_CORAL_INTAKE));
-        scontroller.start().and(scontroller.leftTrigger()).whileTrue(arm.commandToSetpoint(Arm.ArmState.HUMAN_PLAYER_INTAKE));
+        arm.setDefaultCommand(arm.commandMoveSpeed(scontroller));
+
+        scontroller.back().and(scontroller.y()).whileTrue(arm.goToL2());
+        scontroller.back().and(scontroller.a()).whileTrue(arm.goToL3());
+        scontroller.back().and(scontroller.b()).whileTrue(arm.commandToSetpoint(Arm.ArmState.L1_CORAL));
+        scontroller.back().and(scontroller.x()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_ALGAE_INTAKE));
+        scontroller.back().and(scontroller.leftBumper()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_CORAL_INTAKE));
+        scontroller.back().and(scontroller.leftTrigger()).whileTrue(arm.commandToSetpoint(Arm.ArmState.HUMAN_PLAYER_INTAKE));
 
         controller.start().whileTrue(leDs.commandSetToGreen());//Leds
         controller.back().whileTrue(leDs.commandSetToRed());//Leds
@@ -112,19 +106,19 @@ public class RobotContainer {
 
 
     /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
+     * Use this to pass the autonomous command to the main {@link} class.
      *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Command auto = Commands.run(
-                ()->drivetrain.orderTrajectory("Leo Auto 1")
+        Command auto =
+                drivetrain.orderTrajectory("Leo Auto 1")
                         .andThen(arm.commandToSetpoint(Arm.ArmState.L1_CORAL))
                                 .andThen(endEffectorThing.outputCoral(false,1,3))
                                         .withTimeout(2)
                                                 .andThen(drivetrain.orderTrajectory("get out of the way"))
-        );
-        return drivetrain.orderTrajectory("Leo Auto 1");
+        ;
+        return drivetrain.orderTrajectory("Leo auto hates");
     }
 
 }

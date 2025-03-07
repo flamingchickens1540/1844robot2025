@@ -94,14 +94,14 @@ public class Arm extends SubsystemBase {
         armMotor.getConfigurator().apply(config);
         armMotor.setPosition(encoder.get()/3);
         armMotor1.setPosition(encoder.get()/3);
-        armMotor.setNeutralMode(NeutralModeValue.Coast);
-        armMotor1.setNeutralMode(NeutralModeValue.Coast);
+        armMotor.setNeutralMode(NeutralModeValue.Brake);
+        armMotor1.setNeutralMode(NeutralModeValue.Brake);
 
         positionCtrlReq = new MotionMagicVoltage(0).withSlot(0);
 
-        SmartDashboard.putNumber("Arm/Setpoint/Stow", 120);
-        SmartDashboard.putNumber("Arm/Setpoint/GroundAlgaeIntake", 0);
-        SmartDashboard.putNumber("Arm/Setpoint/L1Coral", 135);
+        SmartDashboard.putNumber("Arm/Setpoint/Stow", 16);
+        SmartDashboard.putNumber("Arm/Setpoint/GroundAlgaeIntake", 29.4);
+        SmartDashboard.putNumber("Arm/Setpoint/L1Coral", 25.2);
         SmartDashboard.putNumber("Arm/Setpoint/GroundCoralIntake", 60);
         SmartDashboard.putNumber("Arm/Setpoint/HumanPlayerIntake", 0);
     }
@@ -121,6 +121,7 @@ public class Arm extends SubsystemBase {
                 () -> {
                     double value = -(controller.getLeftY()/3);
                     armMotor.setVoltage(value*12);
+                    armMotor1.setVoltage(-value*12);
                     //System.out.println(value);
                 },
                 this
@@ -136,8 +137,9 @@ public class Arm extends SubsystemBase {
 
         return Commands.runOnce(
                 ()->setSetpoint(location),
-                this
-        );
+
+        this
+    );
         //   .andThen(Commands.waitUntil(()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() - location.getRotations())<=0.001)));
     }
 
