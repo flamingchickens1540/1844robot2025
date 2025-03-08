@@ -32,7 +32,7 @@ public class shooter extends SubsystemBase {
     public Command spinFullUntil(double time){
 
         return Commands.startEnd(
-                ()->setMotorVelocity(3_000),
+                ()->setMotorVelocity(3_500),
                 ()->shooterMotor.set(0)
         ).withTimeout(time);
 

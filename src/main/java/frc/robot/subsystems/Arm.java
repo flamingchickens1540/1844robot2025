@@ -118,27 +118,42 @@ public class Arm extends SubsystemBase {
 
     public Command commandMoveSpeed(CommandXboxController controller) {
         return Commands.run(
+
                 () -> {
                     double value = -(controller.getLeftY()/3);
                     armMotor.setVoltage(value*12);
                     armMotor1.setVoltage(-value*12);
                     //System.out.println(value);
-                },
-                this
+                }
+                
+        ).finallyDo(() -> {
+            armMotor.setVoltage(0);
+            armMotor1.setVoltage(0);
+        });
+    }
+    public Command stopCommand(){
+        return Commands.run(
+
+                () -> {
+                    double value = (0);
+                    armMotor.setVoltage(value*12);
+                    armMotor1.setVoltage(-value*12);
+                    //System.out.println(value);
+                }
+                
         );
     }
 
     public void setSetpoint(Rotation2d motorPosition) {
         setpoint = motorPosition;
-        armMotor.setControl(positionCtrlReq.withPosition(motorPosition.getRotations()));
+        // armMotor.setControl(positionCtrlReq.withPosition(motorPosition.getRotations()));
     }
 
     public Command commandToSetpoint(Rotation2d location) {
 
         return Commands.runOnce(
                 ()->setSetpoint(location),
-
-        this
+                this
     );
         //   .andThen(Commands.waitUntil(()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() - location.getRotations())<=0.001)));
     }
@@ -160,4 +175,5 @@ public class Arm extends SubsystemBase {
     public Command goToL3(){
         return commandToSetpoint(Rotation2d.fromDegrees(-1.14));
     }
+    
 }

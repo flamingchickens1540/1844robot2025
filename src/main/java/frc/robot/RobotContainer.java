@@ -65,16 +65,15 @@ public class RobotContainer {
     private void configureBindings() {
 
         controller.rightBumper().whileTrue(CTREAutoUtils.drivetrain.Zero());//Zero out the drivetrain
+        scontroller.axisMagnitudeGreaterThan(0, 0.1).whileTrue(arm.commandMoveSpeed(scontroller));
 
-        arm.setDefaultCommand(arm.commandMoveSpeed(scontroller));
-
-        scontroller.back().and(scontroller.y()).whileTrue(arm.goToL2());
+        /*scontroller.back().and(scontroller.y()).whileTrue(arm.goToL2());
         scontroller.back().and(scontroller.a()).whileTrue(arm.goToL3());
         scontroller.back().and(scontroller.b()).whileTrue(arm.commandToSetpoint(Arm.ArmState.L1_CORAL));
         scontroller.back().and(scontroller.x()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_ALGAE_INTAKE));
         scontroller.back().and(scontroller.leftBumper()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_CORAL_INTAKE));
         scontroller.back().and(scontroller.leftTrigger()).whileTrue(arm.commandToSetpoint(Arm.ArmState.HUMAN_PLAYER_INTAKE));
-
+*/
         controller.start().whileTrue(leDs.commandSetToGreen());//Leds
         controller.back().whileTrue(leDs.commandSetToRed());//Leds
         controller.y().whileTrue(leDs.commandSetToPurple());//Leds
