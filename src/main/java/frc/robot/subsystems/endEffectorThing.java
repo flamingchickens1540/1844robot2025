@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class endEffectorThing extends SubsystemBase{
-    private final TalonFX largeEndEffectorThingMotor = new TalonFX(Constants.largeEndEffectorThing.MOTOR_ID);
+    private final TalonFX largeEndEffectorThingMotor = new TalonFX(Constants.largeEndEffectorThing.MOTOR_ID);//black wheels
     public final TalonFX smallEndEffectorThingMotor = new TalonFX(Constants.smallEndEffectorThing.MOTOR_ID1);
 
     public endEffectorThing(){
@@ -27,9 +28,16 @@ public class endEffectorThing extends SubsystemBase{
 
         ,
                 this);
-
+    
 
     }
+
+    public Command stay(){
+        return Commands.startEnd(()->
+        {largeEndEffectorThingMotor.setControl(new TorqueCurrentFOC(20));}, () -> largeEndEffectorThingMotor.set(0), this);
+
+    }
+
     public Command outputCoral(boolean inverted, double speed, double time){
         System.out.println("I work");
         if (inverted){

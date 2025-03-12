@@ -65,15 +65,14 @@ public class RobotContainer {
     private void configureBindings() {
 
         controller.rightBumper().whileTrue(CTREAutoUtils.drivetrain.Zero());//Zero out the drivetrain
-        scontroller.axisMagnitudeGreaterThan(0, 0.1).whileTrue(arm.commandMoveSpeed(scontroller));
+        scontroller.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, 0.1).whileTrue(arm.commandMoveSpeed(scontroller));
 
-        /*scontroller.back().and(scontroller.y()).whileTrue(arm.goToL2());
+        scontroller.back().and(scontroller.y()).whileTrue(arm.goToL2());
         scontroller.back().and(scontroller.a()).whileTrue(arm.goToL3());
-        scontroller.back().and(scontroller.b()).whileTrue(arm.commandToSetpoint(Arm.ArmState.L1_CORAL));
-        scontroller.back().and(scontroller.x()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_ALGAE_INTAKE));
-        scontroller.back().and(scontroller.leftBumper()).whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_CORAL_INTAKE));
-        scontroller.back().and(scontroller.leftTrigger()).whileTrue(arm.commandToSetpoint(Arm.ArmState.HUMAN_PLAYER_INTAKE));
-*/
+        scontroller.povUp().whileTrue(arm.commandToSetpoint(Arm.ArmState.L1_CORAL));
+        scontroller.povDown().whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_CORAL_INTAKE));
+        scontroller.povRight().whileTrue(arm.commandToSetpoint(Arm.ArmState.HUMAN_PLAYER_INTAKE));
+
         controller.start().whileTrue(leDs.commandSetToGreen());//Leds
         controller.back().whileTrue(leDs.commandSetToRed());//Leds
         controller.y().whileTrue(leDs.commandSetToPurple());//Leds
@@ -82,6 +81,7 @@ public class RobotContainer {
 
         scontroller.a().whileTrue(endEffectorThing.removeAlgae(1, 1));//remove algea
         scontroller.a().whileFalse(endEffectorThing.Stop());//my bad code remove algea
+        scontroller.leftStick().whileTrue(endEffectorThing.stay());
 
         scontroller.leftTrigger().whileTrue(shooter.spinFullUntil(3)//shoot
                 .andThen(leDs.commandSetToGreen())//shoot
@@ -117,7 +117,7 @@ public class RobotContainer {
                                         .withTimeout(2)
                                                 .andThen(drivetrain.orderTrajectory("get out of the way"))
         ;
-        return drivetrain.orderTrajectory("Leo auto hates");
+        return CTREAutoUtils.drivetrain.moveABitForward(1);
     }
 
 }

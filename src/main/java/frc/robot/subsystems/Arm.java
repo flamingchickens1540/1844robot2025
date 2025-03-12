@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -58,8 +59,6 @@ public class Arm extends SubsystemBase {
 
     public Arm() {
 
-
-        armMotor1.setControl(new Follower(Constants.Arm.MOTOR_ID, true));
         config.Feedback.SensorToMechanismRatio = Constants.Arm.GEAR_RATIO;
 
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
@@ -102,8 +101,11 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm/Setpoint/Stow", 16);
         SmartDashboard.putNumber("Arm/Setpoint/GroundAlgaeIntake", 29.4);
         SmartDashboard.putNumber("Arm/Setpoint/L1Coral", 25.2);
-        SmartDashboard.putNumber("Arm/Setpoint/GroundCoralIntake", 83.3);
+        SmartDashboard.putNumber("Arm/Setpoint/GroundCoralIntake", 252);
         SmartDashboard.putNumber("Arm/Setpoint/HumanPlayerIntake", -8.8);
+
+        armMotor1.setControl(new Follower(Constants.Arm.MOTOR_ID2, true));
+
     }
 
     @Override
@@ -122,13 +124,12 @@ public class Arm extends SubsystemBase {
                 () -> {
                     double value = -(controller.getLeftY()/3);
                     armMotor.setVoltage(value*12);
-                    armMotor1.setVoltage(-value*12);
+        
                     //System.out.println(value);
                 }
                 
         ).finallyDo(() -> {
             armMotor.setVoltage(0);
-            armMotor1.setVoltage(0);
         });
     }
     public Command stopCommand(){
@@ -137,7 +138,6 @@ public class Arm extends SubsystemBase {
                 () -> {
                     double value = (0);
                     armMotor.setVoltage(value*12);
-                    armMotor1.setVoltage(-value*12);
                     //System.out.println(value);
                 }
                 
@@ -146,13 +146,13 @@ public class Arm extends SubsystemBase {
 
     public void setSetpoint(Rotation2d motorPosition) {
         setpoint = motorPosition;
-        // armMotor.setControl(positionCtrlReq.withPosition(motorPosition.getRotations()));
+        armMotor.setControl(positionCtrlReq.withPosition(motorPosition.getRotations()));
     }
 
-    public Command commandToSetpoint(Rotation2d location) {
+    public Command commandToSetpoint(Supplier<Rotation2d> location) {
 
         return Commands.runOnce(
-                ()->setSetpoint(location),
+                ()->setSetpoint(location.get()),
                 this
     );
         //   .andThen(Commands.waitUntil(()-> (Math.abs(armMotor.getPosition().refresh().getValueAsDouble() - location.getRotations())<=0.001)));
@@ -160,7 +160,7 @@ public class Arm extends SubsystemBase {
 
     public Command commandToSetpoint(ArmState armState){
 
-        return commandToSetpoint(Rotation2d.fromDegrees(armState.positionDegrees.getAsDouble()));
+        return commandToSetpoint(()->Rotation2d.fromDegrees(armState.positionDegrees.getAsDouble()));
 
     }
 
@@ -176,4 +176,8 @@ public class Arm extends SubsystemBase {
         return commandToSetpoint(Rotation2d.fromDegrees(-1.14));
     }
     
+    public Command commandToSetpoint(Rotation2d position){
+        return commandToSetpoint(()->
+        position);
+    }
 }
