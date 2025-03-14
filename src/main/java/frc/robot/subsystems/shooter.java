@@ -29,19 +29,22 @@ public class shooter extends SubsystemBase {
         config.Slot0.kV = 0.12;
         shooterMotor.getConfigurator().apply(config);
     }
-    public Command spinFullUntil(double time){
+    public Command spinFullUntil(){
 
         return Commands.startEnd(
-                ()->setMotorVelocity(3_500),
-                ()->shooterMotor.set(0)
-        ).withTimeout(time);
+                ()->setMotorVelocity(3_750),
+                ()->shooterMotor.set(0),
+                this
+        );
 
     }
     public Command intake(double time){
         return Commands.startEnd(
                 ()->setMotorVelocity(-1_000),
-                ()->shooterMotor.set(0)
+                ()->shooterMotor.set(0),
+                this
         ).withTimeout(time);
+    
     }
     public Command Stop(){
         return Commands.runOnce(

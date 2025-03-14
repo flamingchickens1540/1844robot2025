@@ -34,7 +34,16 @@ public class endEffectorThing extends SubsystemBase{
 
     public Command stay(){
         return Commands.startEnd(()->
-        {largeEndEffectorThingMotor.setControl(new TorqueCurrentFOC(20));}, () -> largeEndEffectorThingMotor.set(0), this);
+        {
+                largeEndEffectorThingMotor.setControl(new TorqueCurrentFOC(20));
+                smallEndEffectorThingMotor.setControl(new TorqueCurrentFOC(20));
+        }, () -> {
+                largeEndEffectorThingMotor.set(0);
+                smallEndEffectorThingMotor.set(0);        
+        },
+        
+        this);
+
 
     }
 

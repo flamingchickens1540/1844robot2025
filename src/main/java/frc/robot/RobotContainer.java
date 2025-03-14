@@ -69,9 +69,10 @@ public class RobotContainer {
 
         scontroller.back().and(scontroller.y()).whileTrue(arm.goToL2());
         scontroller.back().and(scontroller.a()).whileTrue(arm.goToL3());
-        scontroller.povUp().whileTrue(arm.commandToSetpoint(Arm.ArmState.L1_CORAL));
+        scontroller.povUp().whileTrue(arm.commandToSetpoint(Arm.ArmState.L2_CORAL));
         scontroller.povDown().whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_CORAL_INTAKE));
         scontroller.povRight().whileTrue(arm.commandToSetpoint(Arm.ArmState.HUMAN_PLAYER_INTAKE));
+        scontroller.povLeft().whileTrue(arm.commandToSetpoint(Arm.ArmState.GROUND_ALGAE_INTAKE));
 
         controller.start().whileTrue(leDs.commandSetToGreen());//Leds
         controller.back().whileTrue(leDs.commandSetToRed());//Leds
@@ -83,13 +84,17 @@ public class RobotContainer {
         scontroller.a().whileFalse(endEffectorThing.Stop());//my bad code remove algea
         scontroller.leftStick().whileTrue(endEffectorThing.stay());
 
-        scontroller.leftTrigger().whileTrue(shooter.spinFullUntil(3)//shoot
-                .andThen(leDs.commandSetToGreen())//shoot
-                        .andThen(shooter.spinFullUntil(1)));//shoot
-        scontroller.leftTrigger().whileFalse(pushyThing.Stop().andThen(leDs.commandSetToRed()));//my bad code shoot
+        scontroller.leftTrigger().whileTrue(
+
+                Commands.parallel(
+                        Commands.sequence(shooter.intake(1), shooter.spinFullUntil()),
+                         pushyThing.Push(0, 0.1), 
+                Commands.waitSeconds(4).andThen(leDs.commandSetToGreen())));
+
+        scontroller.leftTrigger().whileFalse(leDs.commandSetToRed());//my bad code shoot
 
         scontroller.leftBumper().whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3, 0.1)));//a thing
-        scontroller.leftBumper().whileFalse(pushyThing.Stop().andThen(shooter.Stop()));//my bad code a thing
+        //scontroller.leftBumper().whileFalse(pushyThing.Stop().andThen(shooter.Stop()));//my bad code a thing
 
         scontroller.rightBumper().whileTrue(endEffectorThing.intakeCoral(true, 1, 3));//intake coral
         scontroller.rightBumper().whileFalse(endEffectorThing.Stop());//my bad code intake coral
@@ -99,7 +104,6 @@ public class RobotContainer {
 
         CTREAutoUtils.drivetrain.setDefaultCommand(CTREAutoUtils.drivetrain.commandDrive(controller.getHID()));//move the drivetrain
         scontroller.x().whileTrue(pushyThing.Push(1, -1));//a thing
-        scontroller.x().whileFalse(pushyThing.Stop());//my bad code a thing
         controller.leftBumper().whileTrue(CTREAutoUtils.drivetrain.setVelocityAndRotationalRate(0,0,3.14/2));
     }
 
@@ -112,7 +116,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         Command auto =
                 drivetrain.orderTrajectory("Leo Auto 1")
-                        .andThen(arm.commandToSetpoint(Arm.ArmState.L1_CORAL))
+                        .andThen(arm.commandToSetpoint(Arm.ArmState.L2_CORAL))
                                 .andThen(endEffectorThing.outputCoral(false,1,3))
                                         .withTimeout(2)
                                                 .andThen(drivetrain.orderTrajectory("get out of the way"))

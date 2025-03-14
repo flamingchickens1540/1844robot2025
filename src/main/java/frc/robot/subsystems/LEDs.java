@@ -51,13 +51,13 @@ public class LEDs extends SubsystemBase {
         return Commands.run(this::setToRed);
     }
     public Command commandSetToGreen(){
-        return Commands.run(this::setToGreen);
+        return Commands.runOnce(this::setToGreen);
     }
     public Command commandSetToRainbow(){
-        return Commands.run(this::setToRainbow);
+        return Commands.runOnce(this::setToRainbow);
     }
     public Command commandSetToPurple(){
-        return Commands.run(this::setToPurple);
+        return Commands.runOnce(this::setToPurple);
     }
 
 }

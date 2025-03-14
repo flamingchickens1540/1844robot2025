@@ -368,7 +368,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
         public Command Zero() {
         return Commands.runOnce(
                 ()->{
-                    this.resetRotation(Rotation2d.fromDegrees(0));
+                    this.resetRotation(Rotation2d.fromDegrees(180));
                 }
         );
 

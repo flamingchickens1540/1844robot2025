@@ -23,7 +23,7 @@ public class Arm extends SubsystemBase {
         STOW(() -> SmartDashboard.getNumber("Arm/Setpoint/Stow", 16)),
         GROUND_CORAL_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/GroundCoralIntake", 38.3)),
         GROUND_ALGAE_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/GroundAlgaeIntake", 29.4)),
-        L1_CORAL(() -> SmartDashboard.getNumber("Arm/Setpoint/L1Coral", 25.2)),
+        L2_CORAL(() -> SmartDashboard.getNumber("Arm/Setpoint/L2Coral", -36.5)),
         HUMAN_PLAYER_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/HumanPlayerIntake", -8.8));
 
         /*
@@ -99,11 +99,12 @@ public class Arm extends SubsystemBase {
         positionCtrlReq = new MotionMagicVoltage(0).withSlot(0);
 
         SmartDashboard.putNumber("Arm/Setpoint/Stow", 16);
-        SmartDashboard.putNumber("Arm/Setpoint/GroundAlgaeIntake", 29.4);
-        SmartDashboard.putNumber("Arm/Setpoint/L1Coral", 25.2);
-        SmartDashboard.putNumber("Arm/Setpoint/GroundCoralIntake", 252);
-        SmartDashboard.putNumber("Arm/Setpoint/HumanPlayerIntake", -8.8);
-
+        SmartDashboard.putNumber("Arm/Setpoint/GroundAlgaeIntake", 112);
+        SmartDashboard.putNumber("Arm/Setpoint/L2Coral", -36.5);
+        SmartDashboard.putNumber("Arm/Setpoint/GroundCoralIntake", 135);
+        SmartDashboard.putNumber("Arm/Setpoint/HumanPlayerIntake", -50);
+// l3 coral is 9.1
+// l2 coral is -36.5
         armMotor1.setControl(new Follower(Constants.Arm.MOTOR_ID2, true));
 
     }
