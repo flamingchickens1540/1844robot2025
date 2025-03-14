@@ -29,4 +29,15 @@ public class pushyThing extends SubsystemBase {
             this
         );
     }
+    public Command Stop(){
+        return Commands.runOnce(()->pushyThingMotor.set(0));
+    }
+
+    //why are we automatically setting the configs motor output to brake mode?? added a method in case this is a mistake
+    public Command brakeMode()
+    {
+        NeutralModeValue mode = NeutralModeValue.Brake;
+        return Commands.runOnce(
+                ()-> pushyThingMotor.setNeutralMode(mode));
+    }
 }

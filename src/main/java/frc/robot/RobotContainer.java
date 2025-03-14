@@ -31,10 +31,10 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
     //Replace with CommandPS4Controller or CommandJoystick if needed
-    public final frc.robot.subsystems.endEffectorThing endEffectorThing = new endEffectorThing();
+    public final endEffectorThing endEffectorThing = new endEffectorThing();
     public final CommandXboxController controller = new CommandXboxController(0);
-    public final frc.robot.subsystems.pushyThing pushyThing = new pushyThing();
-    public final frc.robot.subsystems.shooter shooter = new shooter();
+    public final pushyThing pushyThing = new pushyThing();
+    public final shooter shooter = new shooter();
     public final Arm arm = new Arm();
     public final CommandXboxController scontroller = new CommandXboxController(1);
     public final XboxController xboxController = new XboxController(0);
