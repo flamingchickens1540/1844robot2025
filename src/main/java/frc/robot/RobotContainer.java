@@ -66,22 +66,22 @@ public class RobotContainer {
     private void configureBindings() {
 
         controller.rightTrigger().toggleOnTrue(CTREAutoUtils.drivetrain.commandBuddyDrive(controllerBuddy.getHID()));
-        controller.rightTrigger().toggleOnTrue(null).and(controllerBuddy.rightBumper()).whileTrue(CTREAutoUtils.drivetrain.Zero());
-        controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, 0.1)).whileTrue(arm.commandMoveSpeedBuddy(scontroller));
+        controller.rightTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.rightBumper()).whileTrue(CTREAutoUtils.drivetrain.Zero());
+        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, 0.1)).whileTrue(arm.commandMoveSpeedBuddy(scontroller));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.povDown()).whileTrue(arm.commandToSetpoint(Rotation2d.fromDegrees(116.5)));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.povLeft()).whileTrue(arm.commandToSetpoint(Rotation2d.fromDegrees(153.2)));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.povRight()).whileTrue(arm.commandToSetpoint(Rotation2d.fromDegrees(125.8)));
-        controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.a()).whileTrue(endEffectorThing.removeAlgae(1, 1));
-        controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.a()).whileFalse(endEffectorThing.Stop());
-        controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.rightStick()).whileTrue(endEffectorThing.stay());
-        controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.leftTrigger()).whileTrue(Commands.parallel(Commands.sequence(shooter.intake(1), shooter.spinFullUntilBuddy()), pushyThing.Push(0, 0.1), Commands.waitSeconds(4).andThen(leDs.commandSetToGreen())));
-        controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.leftTrigger()).whileFalse(leDs.commandSetToRed());
-        controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.leftBumper()).whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3, 0.1)));
+        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.a()).whileTrue(endEffectorThing.removeAlgae(1, 1));
+        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.a()).whileFalse(endEffectorThing.Stop());
+        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.rightStick()).whileTrue(endEffectorThing.stay());
+        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.leftTrigger()).whileTrue(Commands.parallel(Commands.sequence(shooter.intake(1), shooter.spinFullUntilBuddy()), pushyThing.Push(0, 0.1), Commands.waitSeconds(4).andThen(leDs.commandSetToGreen())));
+        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.leftTrigger()).whileFalse(leDs.commandSetToRed());
+        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.leftBumper()).whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3, 0.1)));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.rightBumper()).whileTrue(endEffectorThing.intakeCoral(true, 1, 3));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.rightBumper()).whileFalse(endEffectorThing.Stop());
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.rightTrigger()).whileTrue(endEffectorThing.outputCoral(false, 1, 3));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.rightTrigger()).whileFalse(endEffectorThing.Stop());
-        controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.x()).whileTrue(pushyThing.Push(1, -1));
+        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.x()).whileTrue(pushyThing.Push(1, -1));
 
 
 
