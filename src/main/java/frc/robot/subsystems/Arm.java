@@ -27,12 +27,12 @@ public class Arm extends SubsystemBase {
         HUMAN_PLAYER_INTAKE(() -> SmartDashboard.getNumber("Arm/Setpoint/HumanPlayerIntake", -8.8));
 
         /*
-         * Algae ground : 29.4
-         * Coral Ground : 38.3
+         * Algae ground : 125.8
+         * Coral Ground : 153.2
          * Coral L1: 25.2
          * Coral L2: 13.5
          * Coral L3: -1.14
-         * Algae shooting : 31.5
+         * Algae shooting : 121.5
          * Station intake: -8.8
          **/
 
@@ -111,7 +111,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println(getPosition().getDegrees() + " " + setpoint.getDegrees());
+        System.out.println(getPosition().getDegrees() + " " + setpoint.getDegrees()+" "+ encoder.get());
     }
     public Rotation2d getPosition(){
 

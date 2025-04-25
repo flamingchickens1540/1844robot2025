@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import frc.robot.Constants;
@@ -315,6 +316,18 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
 
         });
     }
+    public Command commandBuddyDrive(XboxController controller){
+        return applyRequest( () -> {
+            SwerveRequest.FieldCentric request  = new SwerveRequest.FieldCentric();
+            request.VelocityY = MathUtil.applyDeadband(-controller.getLeftX(), 0.1) *TunerConstants.kSpeedAt12VoltsMps/6;
+            request.VelocityX = MathUtil.applyDeadband(-controller.getLeftY(), 0.1)*TunerConstants.kSpeedAt12VoltsMps/6;
+            double driveBaseRadius = Math.hypot(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY);
+            request.RotationalRate = TunerConstants.kSpeedAt12VoltsMps/driveBaseRadius*-controller.getRightX()/6;
+            //System.out.println(request.VelocityY+" y  "+request.VelocityX+" x  "+request.RotationalRate+" rot");
+            return request;
+
+        });
+    }
     public Command commandTurnAndDrive (double drivePercent, Supplier<Rotation2d> turn){
         return applyRequest( () -> {
             SwerveRequest.RobotCentric request  = new SwerveRequest.RobotCentric();
@@ -374,6 +387,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
 
 
     }
+
     public Command moveABitForward(double amount) {
         return applyRequest(()-> {
             SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric();

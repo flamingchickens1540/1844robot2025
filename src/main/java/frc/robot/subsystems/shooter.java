@@ -38,6 +38,15 @@ public class shooter extends SubsystemBase {
         );
 
     }
+    public Command spinFullUntilBuddy(){
+
+        return Commands.startEnd(
+                ()->setMotorVelocity(1_750),
+                ()->shooterMotor.set(0),
+                this
+        );
+
+    }
     public Command intake(double time){
         return Commands.startEnd(
                 ()->setMotorVelocity(-1_000),
