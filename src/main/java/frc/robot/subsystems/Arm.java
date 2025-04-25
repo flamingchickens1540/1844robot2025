@@ -133,6 +133,20 @@ public class Arm extends SubsystemBase {
             armMotor.setVoltage(0);
         });
     }
+    public Command commandMoveSpeedBuddy(CommandXboxController controller) {
+        return Commands.run(
+
+                () -> {
+                    double value = -(controller.getLeftY()/18);
+                    armMotor.setVoltage(value*12);
+
+                    //System.out.println(value);
+                }
+
+        ).finallyDo(() -> {
+            armMotor.setVoltage(0);
+        });
+    }
     public Command stopCommand(){
         return Commands.run(
 
