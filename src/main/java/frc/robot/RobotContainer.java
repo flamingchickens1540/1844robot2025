@@ -14,12 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import java.util.function.BooleanSupplier;
-
-
-import static frc.robot.generated.TunerConstants.*;
-
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,7 +35,7 @@ public class RobotContainer {
     public final XboxController xboxController = new XboxController(0);
     public final CTREAutoUtils drivetrain = new CTREAutoUtils();
     public final LEDs leDs = new LEDs();
-
+    boolean toggled;
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -61,27 +55,28 @@ public class RobotContainer {
 
     }
 
-
-
     private void configureBindings() {
 
+        controller.leftTrigger().onTrue(Commands.runOnce(()->toggled=!toggled));
+
+        Trigger toggleds = new Trigger(()->{System.out.println(toggled);; return toggled;});
+
         controller.rightTrigger().toggleOnTrue(CTREAutoUtils.drivetrain.commandBuddyDrive(controllerBuddy.getHID()));
-        controller.rightTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.rightBumper()).whileTrue(CTREAutoUtils.drivetrain.Zero());
-        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, 0.1)).whileTrue(arm.commandMoveSpeedBuddy(scontroller));
+        toggleds.and(controllerBuddy.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, 0.1)).whileTrue(arm.commandMoveSpeedBuddy(controllerBuddy));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.povDown()).whileTrue(arm.commandToSetpoint(Rotation2d.fromDegrees(116.5)));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.povLeft()).whileTrue(arm.commandToSetpoint(Rotation2d.fromDegrees(153.2)));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.povRight()).whileTrue(arm.commandToSetpoint(Rotation2d.fromDegrees(125.8)));
-        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.a()).whileTrue(endEffectorThing.removeAlgae(1, 1));
-        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.a()).whileFalse(endEffectorThing.Stop());
-        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.rightStick()).whileTrue(endEffectorThing.stay());
-        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.leftTrigger()).whileTrue(Commands.parallel(Commands.sequence(shooter.intake(1), shooter.spinFullUntilBuddy()), pushyThing.Push(0, 0.1), Commands.waitSeconds(4).andThen(leDs.commandSetToGreen())));
-        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.leftTrigger()).whileFalse(leDs.commandSetToRed());
-        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.leftBumper()).whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3, 0.1)));
+        toggleds.and(controllerBuddy.a()).whileTrue(endEffectorThing.removeAlgae(1, 1));
+        toggleds.and(controllerBuddy.a()).whileFalse(endEffectorThing.Stop());
+        toggleds.and(controllerBuddy.rightStick()).whileTrue(endEffectorThing.stay());
+        toggleds.and(controllerBuddy.leftTrigger()).whileTrue(Commands.parallel(Commands.sequence(shooter.intake(1), shooter.spinFullUntilBuddy()), pushyThing.Push(0, 0.1), Commands.waitSeconds(4).andThen(leDs.commandSetToGreen())));
+        toggleds.and(controllerBuddy.leftTrigger()).whileFalse(leDs.commandSetToRed());
+        toggleds.and(controllerBuddy.leftBumper()).whileTrue(shooter.intake(3).alongWith(pushyThing.Push(3, 0.1)));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.rightBumper()).whileTrue(endEffectorThing.intakeCoral(true, 1, 3));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.rightBumper()).whileFalse(endEffectorThing.Stop());
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.rightTrigger()).whileTrue(endEffectorThing.outputCoral(false, 1, 3));
         //controller.leftTrigger().toggleOnTrue(null).and(controllerBuddy.rightTrigger()).whileFalse(endEffectorThing.Stop());
-        controller.leftTrigger().toggleOnTrue(Commands.idle()).and(controllerBuddy.x()).whileTrue(pushyThing.Push(1, -1));
+        toggleds.and(controllerBuddy.x()).whileTrue(pushyThing.Push(1, -1));
 
 
 

@@ -111,7 +111,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println(getPosition().getDegrees() + " " + setpoint.getDegrees()+" "+ encoder.get());
+        //System.out.println(getPosition().getDegrees() + " " + setpoint.getDegrees()+" "+ encoder.get());
     }
     public Rotation2d getPosition(){
 

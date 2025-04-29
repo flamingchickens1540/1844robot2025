@@ -90,7 +90,7 @@ public class Robot extends TimedRobot
     public void robotPeriodic()
     {
         //TunerConstants.DriveTrain.setDefaultCommand(TunerConstants.DriveTrain.commandDrive(controller.getHID()));
-        Commands.print("Doing anything at all");
+        //Commands.print("Doing anything at all");
 //        if (controller.a().getAsBoolean()){
 //            System.out.println("btton works!(yay)");
 //        }
